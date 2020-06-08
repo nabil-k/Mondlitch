@@ -1,18 +1,25 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <thread>
+#include "player.h"
 
 int main()
 {
-	sf::Clock clock; // clock starts
-	sf::RenderWindow window(sf::VideoMode(1280, 720), "SFML works!");
-	sf::CircleShape shape(100.f);
-	shape.setFillColor(sf::Color::Green);
+	sf::Image spriteSheet;
+	spriteSheet.loadFromFile("./assets/characters.png");
+
+	// Clock starts
+	sf::Clock clock; 
+	
+	// Window Properties
+	sf::RenderWindow window(sf::VideoMode(1280, 720), "Germs Go Away");
+	window.setFramerateLimit(60);
+
+	//Player
+	Player player = Player(spriteSheet);
 
 	while (window.isOpen())
 	{
-		
-		sf::Time fiveSeconds = sf::seconds(5.f);
 
 		// Game Exit
 		sf::Event event;
@@ -22,13 +29,12 @@ int main()
 				window.close();
 		}
 
-		if (clock.getElapsedTime().asSeconds() >= 5.f) {
-			std::cout << "Five seconds has passed" << std::endl;
-			clock.restart();
-		}
+		// Updates
+		player.update();
 
+		// Rendering
 		window.clear();
-		window.draw(shape);
+		window.draw(player.getSprite());
 		window.display();
 	}
 
