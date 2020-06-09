@@ -2,6 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include <thread>
 #include "player.h"
+#include "platform.h"
+
 
 int main()
 {

@@ -4,6 +4,7 @@
 class Player {
 	int width, height;
 	float x, y;
+	bool top_collision, bottom_collision, left_collision, right_collision;
 	sf::Texture texture;
 	sf::Sprite sprite;
 
