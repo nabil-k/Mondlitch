@@ -20,15 +20,8 @@ int main()
 	// Preparing Level
 
 	std::vector<Platform> levelPlatforms;
-	
-	int grassPlatformSpriteCoords[3][4] = {
-		{161,0,16,16},
-		{(161 + 16),0,16,16},
-		{(161 + 32),0,16,16}
-	};
 
-
-	for (int i = 0; i < 10; i++){
+	for (int i = 0; i < 40; i++){
 		Platform platform = Platform(i * 16.f, 704.f, 16, 16, textureManager);
 		levelPlatforms.push_back(platform);
 	};
@@ -39,7 +32,7 @@ int main()
 	while (window.isOpen())
 	{
 		
-		window.clear();
+		window.clear(sf::Color(176, 131, 229));
 
 		// Game Exit
 		sf::Event event;
@@ -59,7 +52,7 @@ int main()
 		}
 		
 		// Player update & render
-		player.update();
+		player.update(levelPlatforms);
 		window.draw(player.getSprite());
 
 		window.display();
