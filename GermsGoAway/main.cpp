@@ -1,27 +1,45 @@
 #include <iostream>
-#include <SFML/Graphics.hpp>
 #include <thread>
-#include "player.h"
-#include "platform.h"
-
+#include <vector>
+#include <SFML/Graphics.hpp>
+#include "Player.h"
+#include "Platform.h"
+#include "TextureManager.h"
 
 int main()
 {
-	sf::Image spriteSheet;
-	spriteSheet.loadFromFile("./assets/characters.png");
+	TextureManager* textureManager = new TextureManager();
 
-	// Clock starts
-	sf::Clock clock; 
-	
 	// Window Properties
 	sf::RenderWindow window(sf::VideoMode(1280, 720), "Germs Go Away");
 	window.setFramerateLimit(60);
 
-	//Player
-	Player player = Player(spriteSheet);
+	// Preparing Player
+	Player player = Player(textureManager);
+
+	// Preparing Level
+
+	std::vector<Platform> levelPlatforms;
+	
+	int grassPlatformSpriteCoords[3][4] = {
+		{161,0,16,16},
+		{(161 + 16),0,16,16},
+		{(161 + 32),0,16,16}
+	};
+
+
+	for (int i = 0; i < 10; i++){
+		Platform platform = Platform(i * 16.f, 704.f, 16, 16, textureManager);
+		levelPlatforms.push_back(platform);
+	};
+
+	// Clock starts
+	sf::Clock clock;
 
 	while (window.isOpen())
 	{
+		
+		window.clear();
 
 		// Game Exit
 		sf::Event event;
@@ -31,12 +49,19 @@ int main()
 				window.close();
 		}
 
-		// Updates
-		player.update();
+		int i = 0;
 
-		// Rendering
-		window.clear();
+		// Level update & render
+		for (auto &platform: levelPlatforms) {
+			
+			platform.update();
+			window.draw(platform.getSprite());
+		}
+		
+		// Player update & render
+		player.update();
 		window.draw(player.getSprite());
+
 		window.display();
 	}
 

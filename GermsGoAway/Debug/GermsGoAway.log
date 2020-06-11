@@ -1,2 +1,3 @@
 ﻿  main.cpp
+c:\users\duoma\desktop\germsgoaway\germsgoaway\texturemanager.h(43): warning C4715: 'TextureManager::getTexture': not all control paths return a value
   GermsGoAway.vcxproj -> C:\Users\duoma\Desktop\GermsGoAway\Debug\GermsGoAway.exe

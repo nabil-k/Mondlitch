@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "TextureManager.h"
 
 class Platform {
 
@@ -7,20 +8,24 @@ class Platform {
 	float x, y;
 	sf::Texture texture;
 	sf::Sprite sprite;
+	sf::Image LevelSpriteSheet;
+	TextureManager* textureManager;
+	
 
 	public:
 		int getWidth(), getHeight();
 		float getX(), getY();
 		void update();
 		sf::Sprite getSprite();
-
-	Platform(float x, float y, int width, int height, sf::Image img, int img_coords[4]) {
+		//, int img_coords[4]
+	Platform(float x, float y, int width, int height, TextureManager* textureManagerInitialized) {
+		
 		this->x = x;
 		this->y = y;
 		this->width = width;
 		this-> height = height;
-		texture.loadFromImage(img, sf::IntRect(img_coords[0], img_coords[1], img_coords[2], img_coords[3]));
-		sprite.setTexture(texture);
+		this->textureManager = textureManagerInitialized;
+		sprite.setTexture(textureManager->getTexture("Dirt"));
 		sprite.setPosition(sf::Vector2f(x, y));
 		
 	}
@@ -44,7 +49,7 @@ float Platform::getY() {
 }
 
 void Platform::update() {
-
+	
 }
 
 sf::Sprite Platform::getSprite() {
