@@ -26,13 +26,20 @@ int main()
 		levelPlatforms.push_back(platform);
 	};
 
+	Platform smallWall_1 = Platform(500.f, 500.f, 16, 16, textureManager);
+	Platform smallWall_2 = Platform(0.f, 688.f, 16, 16, textureManager);
+	Platform smallWall_3 = Platform(160.f, 688.f, 16, 16, textureManager);
+	levelPlatforms.push_back(smallWall_1);
+	levelPlatforms.push_back(smallWall_2);
+	levelPlatforms.push_back(smallWall_3);
+
 	// Clock starts
 	sf::Clock clock;
 
 	while (window.isOpen())
 	{
-		
 		window.clear(sf::Color(176, 131, 229));
+		clock.restart();
 
 		// Game Exit
 		sf::Event event;
@@ -52,7 +59,7 @@ int main()
 		}
 		
 		// Player update & render
-		player.update(levelPlatforms);
+		player.update(levelPlatforms, clock.getElapsedTime().asSeconds());
 		window.draw(player.getSprite());
 
 		window.display();
