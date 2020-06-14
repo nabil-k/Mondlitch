@@ -23,10 +23,10 @@ class TextureManager {
 		textures.insert({ "Dirt", dirtTexture });
 
 		// Character Texture Assets
-		CharacterSpriteSheet.loadFromFile("./assets/characters.png");
+		CharacterSpriteSheet.loadFromFile("./assets/characters_hitboxes.png");
 
 		sf::Texture characterTextureIdle = sf::Texture();
-		characterTextureIdle.loadFromImage(CharacterSpriteSheet, sf::IntRect(9, 42, 14, 21));
+		characterTextureIdle.loadFromImage(CharacterSpriteSheet, sf::IntRect(9, 42, 15, 22));
 		textures.insert({"IdlePlayer", characterTextureIdle});
 
 	}

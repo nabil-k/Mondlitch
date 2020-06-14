@@ -35,6 +35,7 @@ int main()
 
 	// Clock starts
 	sf::Clock clock;
+	sf::Mouse mouse;
 
 	while (window.isOpen())
 	{
@@ -50,6 +51,10 @@ int main()
 		}
 
 		int i = 0;
+
+		if (mouse.isButtonPressed(sf::Mouse::Left)) {
+			std::cout << "Mouse Y : " << mouse.getPosition(window).y << std::endl;
+		}
 
 		// Level update & render
 		for (auto &platform: levelPlatforms) {
