@@ -1,4 +1,4 @@
 ﻿  main.cpp
-c:\users\duoma\desktop\germsgoaway\germsgoaway\player.h(146): warning C4101: 'adjustment': unreferenced local variable
+c:\users\duoma\desktop\germsgoaway\germsgoaway\player.h(175): warning C4101: 'adjustment': unreferenced local variable
 c:\users\duoma\desktop\germsgoaway\germsgoaway\texturemanager.h(43): warning C4715: 'TextureManager::getTexture': not all control paths return a value
   GermsGoAway.vcxproj -> C:\Users\duoma\Desktop\GermsGoAway\Debug\GermsGoAway.exe

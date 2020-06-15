@@ -15,6 +15,8 @@ class Player {
 	bool moveRight = true;
 	bool moveLeft = true;
 	bool moveUp = true;
+	bool prev_moveRight = false;
+	bool prev_moveLeft = false;
 
 
 	sf::Clock dt;
@@ -80,70 +82,100 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 			
 	}
 
+	// Might be used to implement crounching later
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-		pos_y += 5;
-		vel_y = 5;
-		sprite.move(0, 5.f);
-
 	}
 
+	// Left movement
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-		std::cout << "A" << std::endl;
-		pos_x -= 3;
-		vel_x = 3;
-		sprite.move(-3.f, 0);
-		moveLeftPressed = true;
+		if (moveLeft) {
+			if (prev_moveRight) {
+				vel_x = 0;
+				prev_moveRight = false;
+			}
+			prev_moveLeft = true;
 
+			if (vel_x > -3) {
+				vel_x -= gravity * 0.001802f;
+			}
+			pos_x += vel_x;
+
+			//pos_x -= 3;
+			//vel_x = -3.f;
+			sprite.move(vel_x, 0.f);
+			std::cout << "Moving Left= " << pos_x << std::endl;
+		}
+	}
+	else{
+		if (prev_moveLeft) {
+			vel_x = 0;
+		}
 	}
 
+	// Right movement
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {	
+		if (moveRight) {
+			if (prev_moveLeft) {
+				vel_x = 0;
+				prev_moveLeft = false;
+			}
+			prev_moveRight = true;
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-		std::cout << "D IS PRESSED============================" << std::endl;
-		pos_x += 3;
-		vel_x = 3;
-		sprite.move(3.f, 0);
+			if (vel_x < 3) {
+				vel_x += gravity * 0.001802f;
+			}
 
+			pos_x += vel_x;
+
+			//pos_x += 3;
+			//vel_x = 3.f;
+			sprite.move(vel_x, 0);
+		}
+	}
+	else {
+		if (prev_moveRight) {
+			vel_x = 0;
+		}
 	}
 
+	// Controls how a player jumps
 	if (jumpPressed) {
 		if (!fall) {
-			pos_y -= 3;
-			vel_y = -3;
-			sprite.move(0, -3.f);
+			pos_y -= 5;
+			vel_y = -5.f;
+			sprite.move(0, vel_y);
 		}
 
 	}
 
-
+	// Controls how player falls
 	if (fall) {
-		std::cout << vel_y << std::endl;
-		if (dt > 0.015f) {
-			dt = 0.015f;
-		}
 		if (vel_y < 10) {
 			vel_y += gravity * 0.001802f * 2;
-
 		}
-
 		pos_y += vel_y;
 		sprite.move(0.f, vel_y);
-
 	}
 
 
 	
-	
+	// Level
 	this->levelPlatforms = levelPlatforms;
 
+	// Player's hitbox
 	float leftX = pos_x;
 	float rightX = (pos_x + width);
-
 	float topY = pos_y;
 	float bottomY = pos_y + height;
 
-	bool leftXCollission, rightXCollision, topYCollision, bottomYCollision;
+	// Tracks if player can move in a certain direction
 	bool playerTouchedBottom = false;
+	moveLeft = true;
+	moveRight = true;
 	float adjustment;
+
+	// Player Collision Detection
+	bool leftXCollission, rightXCollision, topYCollision, bottomYCollision;
 
 	for (auto &platform : levelPlatforms) {
 		leftXCollission = (leftX >= platform.getX()) && (leftX <= (platform.getX() + platform.getWidth()));
@@ -155,15 +187,16 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 		
 		// Checks bottom collisions
 		if (vel_y > 0) {
-			if (bottomYCollision && (rightXCollision || leftXCollission)) {
+			float leftXCollission_bottom = (leftX + 1 >= platform.getX()) && (leftX + 1 <= (platform.getX() + platform.getWidth()));
+			float rightXCollision_bottom = (rightX - 1 >= platform.getX()) && (rightX - 1 <= (platform.getX() + platform.getWidth()));
+			if (bottomYCollision && (rightXCollision_bottom || leftXCollission_bottom)) {
 				playerTouchedBottom = true;
 				float adjustment = platform.getY() - height;
 				pos_y = adjustment;
 				bottomY = pos_y;
 				sprite.setPosition(pos_x, adjustment);
 				fall = false;
-				std::cout << "ADJUSTED_1 at " << dt << std::endl;
-				std::cout << "bottomY" << bottomY << std::endl;
+				std::cout << "BOTTOM COLLISION" << std::endl;
 				vel_y = 0;
 			}
 		}
@@ -171,22 +204,29 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 		
 
 		// Checks top collisions
-		if (topYCollision && (rightXCollision || leftXCollission)) {
-			//std::cout << "TOP COLLISION" << std::endl;
-			vel_y = 0;
+		if (vel_y < 0) {
+			float leftXCollission_bottom = (leftX + 1 >= platform.getX()) && (leftX + 1 <= (platform.getX() + platform.getWidth()));
+			float rightXCollision_bottom = (rightX - 1 >= platform.getX()) && (rightX - 1 <= (platform.getX() + platform.getWidth()));
+			if (topYCollision && (rightXCollision_bottom || leftXCollission_bottom)) {
+				float adjustment = platform.getY() + platform.getHeight();
+				pos_y = adjustment;
+				bottomY = pos_y;
+				sprite.setPosition(pos_x, adjustment);
+				std::cout << "TOP COLLISION" << std::endl;
+				vel_y = 0;
+			}
 		}
 
 		// Checks left collisions
-	
-		
 		if (leftXCollission) {
 			bool checkTopYPlatInBetween = platform.getY() >= topY && platform.getY() + 1 < bottomY;
 			bool checkBottomYPlatInBetween = platform.getY() + platform.getHeight() >= topY && platform.getY() + platform.getHeight() < bottomY;
 			if (checkTopYPlatInBetween || checkBottomYPlatInBetween) {
-				std::cout << "ADJUSTED_2 at " << dt << std::endl;
-				std::cout << "bottomY" << bottomY << std::endl;
+				moveLeft = false;
 				pos_x = platform.getX() + platform.getWidth();
 				sprite.setPosition(pos_x, pos_y);
+				std::cout << "LEFT COLLISION" << std::endl;
+				std::cout << fall << std::endl;
 				vel_x = 0;
 			}
 		}
@@ -194,8 +234,14 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 
 		// Checks right collisions
 		if (rightXCollision) {
-			//std::cout << "RIGHT COLLISION" << std::endl;
-			vel_x = 0;
+			bool checkTopYPlatInBetween = platform.getY() >= topY && platform.getY() + 1 < bottomY;
+			bool checkBottomYPlatInBetween = platform.getY() + platform.getHeight() >= topY && platform.getY() + platform.getHeight() < bottomY;
+			if (checkTopYPlatInBetween || checkBottomYPlatInBetween) {
+				moveRight = false;
+				pos_x = platform.getX() - width;
+				sprite.setPosition(pos_x, pos_y);
+				std::cout << "RIGHT COLLISION" << std::endl;
+			}
 		}
 	
 		if (!playerTouchedBottom) {
@@ -203,11 +249,7 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 		}
 
 	}
-
-
-
-
-	
+	std::cout << "=====================" << std::endl;
 
 }
 
