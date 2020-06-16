@@ -39,8 +39,9 @@ int main()
 
 	while (window.isOpen())
 	{
+		
 		window.clear(sf::Color(176, 131, 229));
-		clock.restart();
+		
 
 		// Game Exit
 		sf::Event event;

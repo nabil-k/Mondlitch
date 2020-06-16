@@ -17,12 +17,12 @@ class Player {
 	bool moveUp = true;
 	bool prev_moveRight = false;
 	bool prev_moveLeft = false;
+	sf::Clock animateTime;
 
 
 	sf::Clock dt;
-
 	std::vector<Platform> levelPlatforms;
-	sf::Texture texture;
+	std::vector<sf::Texture> textures;
 	sf::Sprite sprite;
 	sf::Image CharacterSpriteSheet;
 	TextureManager* textureManager;
@@ -31,19 +31,41 @@ class Player {
 	public:
 		int getWidth(), getHeight();
 		float getX(), getY();
+		float jumpHeight;
 		void update(std::vector<Platform> levelPlatforms, float dt);
 		sf::Sprite getSprite();
 		void jump();
+		void changeSpriteTexture();
+		// for animations
+		float maxKeyframeTime; 
+		float timeSinceLastKeyframe;
+		float walkFrame;
 	
 	Player(TextureManager* textureManagerInitialized){
 		pos_x = 600.f;
 		pos_y = 0.f;
-		width = 15;
+		width = 18;
 		height = 22;
+		jumpHeight = 5.f;
 		vel_x = 0;
 		vel_y = 0;
+		maxKeyframeTime = 1;
+		timeSinceLastKeyframe = 0;
+		walkFrame = 1;
+
 		this->textureManager = textureManagerInitialized;
-		sprite.setTexture(textureManager->getTexture("IdlePlayer"));
+		// Preloading all player textures
+		this->textures.push_back(textureManager->getTexture("Player_Idle"));
+		this->textures.push_back(textureManager->getTexture("Player_Walk_1"));
+		this->textures.push_back(textureManager->getTexture("Player_Walk_2"));
+		this->textures.push_back(textureManager->getTexture("Player_Walk_3"));
+		this->textures.push_back(textureManager->getTexture("Player_Jump_1"));
+		this->textures.push_back(textureManager->getTexture("Player_Jump_2"));
+
+		// Default texture set
+		sprite.setTexture(textures.at(0));
+		sprite.setOrigin({ 0, 0 });
+
 		sprite.setPosition(sf::Vector2f(pos_x, pos_y));
 
 	}
@@ -71,6 +93,47 @@ void Player::jump(){
 
 }
 
+void Player::changeSpriteTexture() {
+	timeSinceLastKeyframe = animateTime.getElapsedTime().asSeconds();
+
+	// Flips sprite based on if they're moving left/right
+	if (vel_x > 0) {
+		sprite.setOrigin({ 0, 0 });
+		sprite.setScale({ 1, 1 });
+	}
+	else if(vel_x < 0) {
+		sprite.setOrigin({ sprite.getLocalBounds().width, 0 });
+		sprite.setScale({ -1, 1 });
+	}
+
+	// Animations for when character is on the ground
+	if (vel_y == 0) {
+		if (vel_x == 0) {
+			sprite.setTexture(textures.at(0));
+		}
+		else if (vel_x > 0 || vel_x < 0) {
+			if (timeSinceLastKeyframe > (maxKeyframeTime - (std::abs(vel_x) * .3))) {
+				++walkFrame;
+				if (walkFrame > 3) {
+					walkFrame = 1;
+				}
+				sprite.setTexture(textures.at(walkFrame));
+				animateTime.restart();
+			}
+		}
+	}
+	else if (vel_y > 0) {
+		sprite.setTexture(textures.at(5));
+		animateTime.restart();
+	}
+	else {
+		sprite.setTexture(textures.at(4));
+		animateTime.restart();
+	}
+
+
+}
+
 void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 	
 	bool jumpPressed = false;
@@ -95,13 +158,10 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 			}
 			prev_moveLeft = true;
 
-			if (vel_x > -3) {
+			if (vel_x > -2) {
 				vel_x -= gravity * 0.001802f;
 			}
 			pos_x += vel_x;
-
-			//pos_x -= 3;
-			//vel_x = -3.f;
 			sprite.move(vel_x, 0.f);
 			std::cout << "Moving Left= " << pos_x << std::endl;
 		}
@@ -121,14 +181,12 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 			}
 			prev_moveRight = true;
 
-			if (vel_x < 3) {
+			if (vel_x < 2) {
 				vel_x += gravity * 0.001802f;
 			}
 
 			pos_x += vel_x;
 
-			//pos_x += 3;
-			//vel_x = 3.f;
 			sprite.move(vel_x, 0);
 		}
 	}
@@ -141,8 +199,8 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 	// Controls how a player jumps
 	if (jumpPressed) {
 		if (!fall) {
-			pos_y -= 5;
-			vel_y = -5.f;
+			pos_y -= jumpHeight;
+			vel_y = -jumpHeight;
 			sprite.move(0, vel_y);
 		}
 
@@ -249,6 +307,9 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 		}
 
 	}
+
+	changeSpriteTexture();
+
 	std::cout << "=====================" << std::endl;
 
 }
