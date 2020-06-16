@@ -16,7 +16,7 @@ int main()
 	sf::RenderWindow window(sf::VideoMode(1280, 720), "Germs Go Away");
 	window.setFramerateLimit(60);
 	// View Properties
-	sf::View view(sf::FloatRect(0.f, 600.f, 320.f, 180.f));
+	sf::View view(sf::FloatRect(0.f, 600.f, 480.f, 270.f));
 	window.setView(view);
 
 
@@ -57,7 +57,7 @@ int main()
 		player.update(levelOne, clock.getElapsedTime().asSeconds());
 		window.draw(player.getSprite());
 		
-		view.setCenter(player.getX(), player.getY());
+		view.setCenter(player.getX(), player.getY() - 16.f);
 		window.setView(view);
 
 		window.display();

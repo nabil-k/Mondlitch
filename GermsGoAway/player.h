@@ -23,27 +23,27 @@ class Player {
 	sf::Sprite sprite;
 	sf::Image CharacterSpriteSheet;
 	TextureManager* textureManager;
-	
 
-	public:
-		int getWidth(), getHeight();
-		float getX(), getY();
-		float jumpHeight;
-		void update(std::vector<Platform> levelPlatforms, float dt);
-		sf::Sprite getSprite();
-		void jump();
-		void changeSpriteTexture();
-		// for animations
-		float maxKeyframeTime; 
-		float timeSinceLastKeyframe;
-		float walkFrame;
-	
-	Player(TextureManager* textureManagerInitialized){
+
+public:
+	int getWidth(), getHeight();
+	float getX(), getY();
+	float jumpHeight;
+	void update(std::vector<Platform> levelPlatforms, float dt);
+	sf::Sprite getSprite();
+	void jump();
+	void changeSpriteTexture();
+	// for animations
+	float maxKeyframeTime;
+	float timeSinceLastKeyframe;
+	float walkFrame;
+
+	Player(TextureManager* textureManagerInitialized) {
 		pos_x = 100.f;
 		pos_y = 300.f;
 		width = 18;
 		height = 22;
-		jumpHeight = 5.f;
+		jumpHeight = 3.f;
 		vel_x = 0;
 		vel_y = 0;
 		maxKeyframeTime = 1;
@@ -86,7 +86,7 @@ float Player::getY() {
 }
 
 
-void Player::jump(){
+void Player::jump() {
 
 }
 
@@ -98,7 +98,7 @@ void Player::changeSpriteTexture() {
 		sprite.setOrigin({ 0, 0 });
 		sprite.setScale({ 1, 1 });
 	}
-	else if(vel_x < 0) {
+	else if (vel_x < 0) {
 		sprite.setOrigin({ sprite.getLocalBounds().width, 0 });
 		sprite.setScale({ -1, 1 });
 	}
@@ -132,14 +132,14 @@ void Player::changeSpriteTexture() {
 }
 
 void Player::update(std::vector<Platform> levelPlatforms, float dt) {
-	
+
 	bool jumpPressed = false;
 	bool moveLeftPressed = false;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
 
 		jumpPressed = true;
 
-			
+
 	}
 
 	// Might be used to implement crounching later
@@ -162,14 +162,14 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 			sprite.move(vel_x, 0.f);
 		}
 	}
-	else{
+	else {
 		if (prev_moveLeft) {
 			vel_x = 0;
 		}
 	}
 
 	// Right movement
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {	
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
 		if (moveRight) {
 			if (prev_moveLeft) {
 				vel_x = 0;
@@ -228,25 +228,26 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 
 	for (auto &platform : levelPlatforms) {
 		if (platform.isCollidable()) {
-			leftXCollission = (leftX >= platform.getX()) && (leftX <= (platform.getX() + platform.getWidth()));
-			rightXCollision = (rightX >= platform.getX()) && (rightX <= (platform.getX() + platform.getWidth()));
-			topYCollision = (topY >= platform.getY()) && (topY <= (platform.getY() + platform.getHeight()));
-			bottomYCollision = (bottomY >= platform.getY() && (bottomY <= platform.getY() + platform.getHeight()));
+			leftXCollission = (leftX > platform.getX()) && (leftX < (platform.getX() + platform.getWidth()));
+			rightXCollision = (rightX > platform.getX()) && (rightX < (platform.getX() + platform.getWidth()));
+			topYCollision = (topY > platform.getY()) && (topY < (platform.getY() + platform.getHeight()));
+			bottomYCollision = (bottomY > platform.getY() && (bottomY < platform.getY() + platform.getHeight()));
 
 
 
 			// Checks bottom collisions
 			if (vel_y > 0) {
-				float leftXCollission_bottom = (leftX + 1 >= platform.getX()) && (leftX + 1 <= (platform.getX() + platform.getWidth()));
-				float rightXCollision_bottom = (rightX - 1 >= platform.getX()) && (rightX - 1 <= (platform.getX() + platform.getWidth()));
+				float leftXCollission_bottom = (leftX + 1 > platform.getX()) && (leftX + 1 < (platform.getX() + platform.getWidth()));
+				float rightXCollision_bottom = (rightX - 1 > platform.getX()) && (rightX - 1 < (platform.getX() + platform.getWidth()));
 				if (bottomYCollision && (rightXCollision_bottom || leftXCollission_bottom)) {
 					playerTouchedBottom = true;
 					float adjustment = platform.getY() - height;
 					pos_y = adjustment;
-					bottomY = pos_y;
+					bottomY = pos_y + height;
 					sprite.setPosition(pos_x, adjustment);
 					fall = false;
 					vel_y = 0;
+					std::cout << "bottom" << std::endl;
 				}
 			}
 
@@ -254,40 +255,52 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 
 			// Checks top collisions
 			if (vel_y < 0) {
-				float leftXCollission_bottom = (leftX + 1 >= platform.getX()) && (leftX + 1 <= (platform.getX() + platform.getWidth()));
-				float rightXCollision_bottom = (rightX - 1 >= platform.getX()) && (rightX - 1 <= (platform.getX() + platform.getWidth()));
+				float leftXCollission_bottom = (leftX + 1 > platform.getX()) && (leftX + 1 < (platform.getX() + platform.getWidth()));
+				float rightXCollision_bottom = (rightX - 1 > platform.getX()) && (rightX - 1 < (platform.getX() + platform.getWidth()));
 				if (topYCollision && (rightXCollision_bottom || leftXCollission_bottom)) {
 					float adjustment = platform.getY() + platform.getHeight();
 					pos_y = adjustment;
-					bottomY = pos_y;
+					topY = pos_y;
 					sprite.setPosition(pos_x, adjustment);
 					vel_y = 0;
+					std::cout << "top" << std::endl;
 				}
 			}
 
 			// Checks left collisions
-			if (leftXCollission) {
-				bool checkTopYPlatInBetween = platform.getY() >= topY && platform.getY() + 1 < bottomY;
-				bool checkBottomYPlatInBetween = platform.getY() + platform.getHeight() >= topY && platform.getY() + platform.getHeight() < bottomY;
-				if (checkTopYPlatInBetween || checkBottomYPlatInBetween) {
-					moveLeft = false;
-					pos_x = platform.getX() + platform.getWidth();
-					sprite.setPosition(pos_x, pos_y);
-					vel_x = 0;
+			if (vel_x < 0) {
+				if (leftXCollission) {
+					bool checkTopYPlatInBetween = platform.getY() > topY && platform.getY() + 1 < bottomY;
+					bool checkBottomYPlatInBetween = platform.getY() + platform.getHeight() > topY && platform.getY() + platform.getHeight() < bottomY;
+					if (checkTopYPlatInBetween || checkBottomYPlatInBetween) {
+						moveLeft = false;
+						pos_x = platform.getX() + platform.getWidth();
+						leftX = pos_x;
+						sprite.setPosition(pos_x, pos_y);
+						vel_x = 0;
+						std::cout << "left" << std::endl;
+					}
 				}
 			}
+
 
 
 			// Checks right collisions
-			if (rightXCollision) {
-				bool checkTopYPlatInBetween = platform.getY() >= topY && platform.getY() + 1 < bottomY;
-				bool checkBottomYPlatInBetween = platform.getY() + platform.getHeight() >= topY && platform.getY() + platform.getHeight() < bottomY;
-				if (checkTopYPlatInBetween || checkBottomYPlatInBetween) {
-					moveRight = false;
-					pos_x = platform.getX() - width;
-					sprite.setPosition(pos_x, pos_y);
+			if (vel_x > 0) {
+				if (rightXCollision) {
+					bool checkTopYPlatInBetween = platform.getY() > topY && platform.getY() + 1 < bottomY;
+					bool checkBottomYPlatInBetween = platform.getY() + platform.getHeight() > topY && platform.getY() + platform.getHeight() < bottomY;
+					if (checkTopYPlatInBetween || checkBottomYPlatInBetween) {
+						moveRight = false;
+						pos_x = platform.getX() - width;
+						rightX = (pos_x + width);
+						sprite.setPosition(pos_x, pos_y);
+						vel_x = 0;
+						std::cout << "right" << std::endl;
+					}
 				}
 			}
+
 
 			if (!playerTouchedBottom) {
 				fall = true;
@@ -304,3 +317,4 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 sf::Sprite Player::getSprite() {
 	return sprite;
 }
+
