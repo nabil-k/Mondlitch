@@ -39,8 +39,8 @@ class Player {
 		float walkFrame;
 	
 	Player(TextureManager* textureManagerInitialized){
-		pos_x = 600.f;
-		pos_y = 0.f;
+		pos_x = 100.f;
+		pos_y = 300.f;
 		width = 18;
 		height = 22;
 		jumpHeight = 5.f;
@@ -160,7 +160,6 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 			}
 			pos_x += vel_x;
 			sprite.move(vel_x, 0.f);
-			std::cout << "Moving Left= " << pos_x << std::endl;
 		}
 	}
 	else{
@@ -228,81 +227,77 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 	bool leftXCollission, rightXCollision, topYCollision, bottomYCollision;
 
 	for (auto &platform : levelPlatforms) {
-		leftXCollission = (leftX >= platform.getX()) && (leftX <= (platform.getX() + platform.getWidth()));
-		rightXCollision = (rightX >= platform.getX()) && (rightX <= (platform.getX() + platform.getWidth()));
-		topYCollision = (topY >= platform.getY()) && (topY <= (platform.getY() + platform.getHeight()));
-		bottomYCollision = (bottomY >= platform.getY() && (bottomY <= platform.getY() + platform.getHeight()));
+		if (platform.isCollidable()) {
+			leftXCollission = (leftX >= platform.getX()) && (leftX <= (platform.getX() + platform.getWidth()));
+			rightXCollision = (rightX >= platform.getX()) && (rightX <= (platform.getX() + platform.getWidth()));
+			topYCollision = (topY >= platform.getY()) && (topY <= (platform.getY() + platform.getHeight()));
+			bottomYCollision = (bottomY >= platform.getY() && (bottomY <= platform.getY() + platform.getHeight()));
 
 
-		
-		// Checks bottom collisions
-		if (vel_y > 0) {
-			float leftXCollission_bottom = (leftX + 1 >= platform.getX()) && (leftX + 1 <= (platform.getX() + platform.getWidth()));
-			float rightXCollision_bottom = (rightX - 1 >= platform.getX()) && (rightX - 1 <= (platform.getX() + platform.getWidth()));
-			if (bottomYCollision && (rightXCollision_bottom || leftXCollission_bottom)) {
-				playerTouchedBottom = true;
-				float adjustment = platform.getY() - height;
-				pos_y = adjustment;
-				bottomY = pos_y;
-				sprite.setPosition(pos_x, adjustment);
-				fall = false;
-				std::cout << "BOTTOM COLLISION" << std::endl;
-				vel_y = 0;
+
+			// Checks bottom collisions
+			if (vel_y > 0) {
+				float leftXCollission_bottom = (leftX + 1 >= platform.getX()) && (leftX + 1 <= (platform.getX() + platform.getWidth()));
+				float rightXCollision_bottom = (rightX - 1 >= platform.getX()) && (rightX - 1 <= (platform.getX() + platform.getWidth()));
+				if (bottomYCollision && (rightXCollision_bottom || leftXCollission_bottom)) {
+					playerTouchedBottom = true;
+					float adjustment = platform.getY() - height;
+					pos_y = adjustment;
+					bottomY = pos_y;
+					sprite.setPosition(pos_x, adjustment);
+					fall = false;
+					vel_y = 0;
+				}
 			}
-		}
 
-		
 
-		// Checks top collisions
-		if (vel_y < 0) {
-			float leftXCollission_bottom = (leftX + 1 >= platform.getX()) && (leftX + 1 <= (platform.getX() + platform.getWidth()));
-			float rightXCollision_bottom = (rightX - 1 >= platform.getX()) && (rightX - 1 <= (platform.getX() + platform.getWidth()));
-			if (topYCollision && (rightXCollision_bottom || leftXCollission_bottom)) {
-				float adjustment = platform.getY() + platform.getHeight();
-				pos_y = adjustment;
-				bottomY = pos_y;
-				sprite.setPosition(pos_x, adjustment);
-				std::cout << "TOP COLLISION" << std::endl;
-				vel_y = 0;
+
+			// Checks top collisions
+			if (vel_y < 0) {
+				float leftXCollission_bottom = (leftX + 1 >= platform.getX()) && (leftX + 1 <= (platform.getX() + platform.getWidth()));
+				float rightXCollision_bottom = (rightX - 1 >= platform.getX()) && (rightX - 1 <= (platform.getX() + platform.getWidth()));
+				if (topYCollision && (rightXCollision_bottom || leftXCollission_bottom)) {
+					float adjustment = platform.getY() + platform.getHeight();
+					pos_y = adjustment;
+					bottomY = pos_y;
+					sprite.setPosition(pos_x, adjustment);
+					vel_y = 0;
+				}
 			}
-		}
 
-		// Checks left collisions
-		if (leftXCollission) {
-			bool checkTopYPlatInBetween = platform.getY() >= topY && platform.getY() + 1 < bottomY;
-			bool checkBottomYPlatInBetween = platform.getY() + platform.getHeight() >= topY && platform.getY() + platform.getHeight() < bottomY;
-			if (checkTopYPlatInBetween || checkBottomYPlatInBetween) {
-				moveLeft = false;
-				pos_x = platform.getX() + platform.getWidth();
-				sprite.setPosition(pos_x, pos_y);
-				std::cout << "LEFT COLLISION" << std::endl;
-				std::cout << fall << std::endl;
-				vel_x = 0;
+			// Checks left collisions
+			if (leftXCollission) {
+				bool checkTopYPlatInBetween = platform.getY() >= topY && platform.getY() + 1 < bottomY;
+				bool checkBottomYPlatInBetween = platform.getY() + platform.getHeight() >= topY && platform.getY() + platform.getHeight() < bottomY;
+				if (checkTopYPlatInBetween || checkBottomYPlatInBetween) {
+					moveLeft = false;
+					pos_x = platform.getX() + platform.getWidth();
+					sprite.setPosition(pos_x, pos_y);
+					vel_x = 0;
+				}
 			}
-		}
-		
 
-		// Checks right collisions
-		if (rightXCollision) {
-			bool checkTopYPlatInBetween = platform.getY() >= topY && platform.getY() + 1 < bottomY;
-			bool checkBottomYPlatInBetween = platform.getY() + platform.getHeight() >= topY && platform.getY() + platform.getHeight() < bottomY;
-			if (checkTopYPlatInBetween || checkBottomYPlatInBetween) {
-				moveRight = false;
-				pos_x = platform.getX() - width;
-				sprite.setPosition(pos_x, pos_y);
-				std::cout << "RIGHT COLLISION" << std::endl;
+
+			// Checks right collisions
+			if (rightXCollision) {
+				bool checkTopYPlatInBetween = platform.getY() >= topY && platform.getY() + 1 < bottomY;
+				bool checkBottomYPlatInBetween = platform.getY() + platform.getHeight() >= topY && platform.getY() + platform.getHeight() < bottomY;
+				if (checkTopYPlatInBetween || checkBottomYPlatInBetween) {
+					moveRight = false;
+					pos_x = platform.getX() - width;
+					sprite.setPosition(pos_x, pos_y);
+				}
 			}
-		}
-	
-		if (!playerTouchedBottom) {
-			fall = true;
+
+			if (!playerTouchedBottom) {
+				fall = true;
+			}
 		}
 
 	}
 
 	changeSpriteTexture();
 
-	std::cout << "=====================" << std::endl;
 
 }
 

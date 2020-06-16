@@ -10,18 +10,18 @@ class Platform {
 	sf::Sprite sprite;
 	sf::Image LevelSpriteSheet;
 	TextureManager* textureManager;
-	bool collidable;
+	sf::String type;
 	
 
 	public:
 		int getWidth(), getHeight();
 		float getX(), getY();
+		bool isCollidable();
 		void update();
 		sf::Sprite getSprite();
-		//, int img_coords[4]
 
 		Platform(float x, float y, int width, int height, TextureManager* textureManagerInitialized, sf::String type) {
-		
+			this->type = type;
 			this->x = x;
 			this->y = y;
 			this->width = width;
@@ -48,6 +48,21 @@ float Platform::getX() {
 
 float Platform::getY() {
 	return y;
+}
+
+bool Platform::isCollidable() {
+	if (type == "Grass") {
+		return true;
+	}
+	else if (type == "Dirt") {
+		return true;
+	}
+	else if (type == "Wall") {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 void Platform::update() {

@@ -41,12 +41,6 @@ int main()
 				window.close();
 		}
 
-		int i = 0;
-
-		if (mouse.isButtonPressed(sf::Mouse::Left)) {
-			std::cout << "Mouse Y : " << mouse.getPosition(window).y << std::endl;
-		}
-
 		// Level update & render
 		for (auto &platform: levelOne) {
 			

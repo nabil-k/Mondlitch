@@ -4,7 +4,5 @@
 #include "Platform.h"
 
 class WallPlatform : public Platform {
-	sf::String type = "Wall";
-	bool collidable = true;
 	using Platform::Platform;
 };

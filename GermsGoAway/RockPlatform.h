@@ -4,7 +4,5 @@
 #include "Platform.h"
 
 class RockPlatform : public Platform {
-	sf::String type = "Rock";
-	bool collidable = false;
 	using Platform::Platform;
 };
