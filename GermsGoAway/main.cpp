@@ -7,6 +7,7 @@
 #include "TextureManager.h"
 #include "Levels.h";
 
+
 int main()
 {
 	TextureManager* textureManager = new TextureManager();
@@ -14,6 +15,10 @@ int main()
 	// Window Properties
 	sf::RenderWindow window(sf::VideoMode(1280, 720), "Germs Go Away");
 	window.setFramerateLimit(60);
+	// View Properties
+	sf::View view(sf::FloatRect(0.f, 600.f, 320.f, 180.f));
+	window.setView(view);
+
 
 	// Preparing Player
 	Player player = Player(textureManager);
@@ -51,6 +56,9 @@ int main()
 		// Player update & render
 		player.update(levelOne, clock.getElapsedTime().asSeconds());
 		window.draw(player.getSprite());
+		
+		view.setCenter(player.getX(), player.getY());
+		window.setView(view);
 
 		window.display();
 	}
