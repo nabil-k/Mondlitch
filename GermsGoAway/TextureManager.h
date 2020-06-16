@@ -18,9 +18,9 @@ class TextureManager {
 		// Level Texture Assets
 		LevelSpriteSheet.loadFromFile("./assets/sheet.png");
 
-		sf::Texture dirtTexture = sf::Texture();
-		dirtTexture.loadFromImage(LevelSpriteSheet, sf::IntRect(177, 0, 16, 16));
-		textures.insert({ "Dirt", dirtTexture });
+		sf::Texture GrassTexture = sf::Texture();
+		GrassTexture.loadFromImage(LevelSpriteSheet, sf::IntRect(177, 0, 16, 16));
+		textures.insert({ "Grass", GrassTexture });
 
 		// Character Texture Assets
 		CharacterSpriteSheet.loadFromFile("./assets/characters.png");
@@ -59,5 +59,6 @@ sf::Texture& TextureManager::getTexture(std::string textureName) {
 	}
 	else {
 		std::cout << "Texture not found" << std::endl;
+		std::cout << "Inputted Texture Name: " << textureName << std::endl;
 	}
 }

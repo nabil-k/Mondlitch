@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Platform.h"
 #include "TextureManager.h"
+#include "Levels.h";
 
 int main()
 {
@@ -18,20 +19,9 @@ int main()
 	Player player = Player(textureManager);
 
 	// Preparing Level
+	Levels levels = Levels(textureManager);
+	std::vector<Platform> levelOne = levels.getLevelOne();
 
-	std::vector<Platform> levelPlatforms;
-
-	for (int i = 0; i < 40; i++){
-		Platform platform = Platform(i * 16.f, 704.f, 16, 16, textureManager);
-		levelPlatforms.push_back(platform);
-	};
-
-	Platform smallWall_1 = Platform(500.f, 500.f, 16, 16, textureManager);
-	Platform smallWall_2 = Platform(0.f, 688.f, 16, 16, textureManager);
-	Platform smallWall_3 = Platform(160.f, 688.f, 16, 16, textureManager);
-	levelPlatforms.push_back(smallWall_1);
-	levelPlatforms.push_back(smallWall_2);
-	levelPlatforms.push_back(smallWall_3);
 
 	// Clock starts
 	sf::Clock clock;
@@ -58,14 +48,14 @@ int main()
 		}
 
 		// Level update & render
-		for (auto &platform: levelPlatforms) {
+		for (auto &platform: levelOne) {
 			
 			platform.update();
 			window.draw(platform.getSprite());
 		}
 		
 		// Player update & render
-		player.update(levelPlatforms, clock.getElapsedTime().asSeconds());
+		player.update(levelOne, clock.getElapsedTime().asSeconds());
 		window.draw(player.getSprite());
 
 		window.display();

@@ -138,9 +138,16 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CratePlatform.h" />
+    <ClInclude Include="DirtPlatform.h" />
+    <ClInclude Include="FlowerPlatform.h" />
+    <ClInclude Include="GrassPlatform.h" />
+    <ClInclude Include="Levels.h" />
     <ClInclude Include="platform.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="RockPlatform.h" />
     <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="WallPlatform.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

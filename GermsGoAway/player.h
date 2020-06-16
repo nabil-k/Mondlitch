@@ -18,10 +18,7 @@ class Player {
 	bool prev_moveRight = false;
 	bool prev_moveLeft = false;
 	sf::Clock animateTime;
-
-
 	sf::Clock dt;
-	std::vector<Platform> levelPlatforms;
 	std::vector<sf::Texture> textures;
 	sf::Sprite sprite;
 	sf::Image CharacterSpriteSheet;
@@ -214,11 +211,6 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 		pos_y += vel_y;
 		sprite.move(0.f, vel_y);
 	}
-
-
-	
-	// Level
-	this->levelPlatforms = levelPlatforms;
 
 	// Player's hitbox
 	float leftX = pos_x;

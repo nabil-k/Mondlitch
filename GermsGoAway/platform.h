@@ -10,6 +10,7 @@ class Platform {
 	sf::Sprite sprite;
 	sf::Image LevelSpriteSheet;
 	TextureManager* textureManager;
+	bool collidable;
 	
 
 	public:
@@ -18,17 +19,18 @@ class Platform {
 		void update();
 		sf::Sprite getSprite();
 		//, int img_coords[4]
-	Platform(float x, float y, int width, int height, TextureManager* textureManagerInitialized) {
+
+		Platform(float x, float y, int width, int height, TextureManager* textureManagerInitialized, sf::String type) {
 		
-		this->x = x;
-		this->y = y;
-		this->width = width;
-		this-> height = height;
-		this->textureManager = textureManagerInitialized;
-		sprite.setTexture(textureManager->getTexture("Dirt"));
-		sprite.setPosition(sf::Vector2f(x, y));
+			this->x = x;
+			this->y = y;
+			this->width = width;
+			this-> height = height;
+			this->textureManager = textureManagerInitialized;
+			sprite.setTexture(textureManager->getTexture(type));
+			sprite.setPosition(sf::Vector2f(x, y));
 		
-	}
+		}
 
 };
 
