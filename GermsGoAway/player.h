@@ -28,6 +28,7 @@ class Player {
 public:
 	int getWidth(), getHeight();
 	float getX(), getY();
+	float getVelocityX();
 	float jumpHeight;
 	void update(std::vector<Platform> levelPlatforms, float dt);
 	sf::Sprite getSprite();
@@ -37,6 +38,7 @@ public:
 	float maxKeyframeTime;
 	float timeSinceLastKeyframe;
 	float walkFrame;
+	bool checkIfPlayerFell();
 
 	Player(TextureManager* textureManagerInitialized) {
 		pos_x = 100.f;
@@ -85,9 +87,20 @@ float Player::getY() {
 	return pos_y;
 }
 
+float Player::getVelocityX() {
+	return vel_x;
+}
+
 
 void Player::jump() {
 
+}
+
+bool Player::checkIfPlayerFell() {
+	if (pos_y > 850) {
+		return true;
+	}
+	return false;
 }
 
 void Player::changeSpriteTexture() {
@@ -109,7 +122,7 @@ void Player::changeSpriteTexture() {
 			sprite.setTexture(textures.at(0));
 		}
 		else if (vel_x > 0 || vel_x < 0) {
-			if (timeSinceLastKeyframe > (maxKeyframeTime - (std::abs(vel_x) * .3))) {
+			if (timeSinceLastKeyframe > (maxKeyframeTime - (std::abs(vel_x) * .4))) {
 				++walkFrame;
 				if (walkFrame > 3) {
 					walkFrame = 1;
@@ -132,6 +145,13 @@ void Player::changeSpriteTexture() {
 }
 
 void Player::update(std::vector<Platform> levelPlatforms, float dt) {
+	std::cout << pos_y << std::endl;
+	if (checkIfPlayerFell()) {
+		vel_x = 0;
+		vel_y = 0;
+		pos_y = 500;
+		pos_x = 100;
+	}
 
 	bool jumpPressed = false;
 	bool moveLeftPressed = false;

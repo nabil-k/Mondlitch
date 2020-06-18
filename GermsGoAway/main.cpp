@@ -6,6 +6,7 @@
 #include "Platform.h"
 #include "TextureManager.h"
 #include "Levels.h";
+#include "Background.h"
 
 
 int main()
@@ -27,6 +28,9 @@ int main()
 	Levels levels = Levels(textureManager);
 	std::vector<Platform> levelOne = levels.getLevelOne();
 
+	// Preparing Background
+	Background background = Background(textureManager);
+
 
 	// Clock starts
 	sf::Clock clock;
@@ -35,7 +39,7 @@ int main()
 	while (window.isOpen())
 	{
 		
-		window.clear(sf::Color(176, 131, 229));
+		window.clear(sf::Color(0, 0, 0));
 		
 
 		// Game Exit
@@ -47,6 +51,10 @@ int main()
 		}
 
 		// Level update & render
+		background.update(player.getVelocityX());
+		window.draw(background.getMainSprite());
+		window.draw(background.getLayerOneSprite());
+
 		for (auto &platform: levelOne) {
 			
 			platform.update();

@@ -4,6 +4,7 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include <fstream>
+#include <cmath>
 #include "Platform.h"
 #include "WallPlatform.h"
 #include "RockPlatform.h"
@@ -18,9 +19,13 @@ class Levels {
 	std::ifstream levelOneFile;
 	std::string row;
 	std::vector<Platform> levelOne;
+	float collisionSectionRows = 0;
+	float collisionSectionColumns = 0;
 
 	public:
 		std::vector<Platform> getLevelOne();
+		std::vector<Platform> addPlatformToCollisionSectionLevelOne(Platform platform);
+		std::vector<Platform> getPlatformNearPlayerLevelOne(float playerX, float playerY);
 
 		Levels(TextureManager* textureManager) {
 
@@ -33,43 +38,64 @@ class Levels {
 				float y = 0;
 				while (std::getline(levelOneFile, row)) {
 					for (float i = 0; i < row.length(); ++i) {
-						
+
+						// Adding platforms
 						float x = i * 16.f;
 						char platform = row.at(i);
 
 						if (platform == 'G') {
 							GrassPlatform p = GrassPlatform(x, y, 16, 16, textureManager, "Grass");
 							levelOne.push_back(p);
+							
 						}
 						else if (platform == 'U') {
 							DirtPlatform p = DirtPlatform(x, y, 16, 16, textureManager, "Dirt");
 							levelOne.push_back(p);
+							
 						}
 						else if (platform == 'W') {
 							WallPlatform p = WallPlatform(x, y, 16, 16, textureManager, "Wall");
 							levelOne.push_back(p);
+							
 						}
 						else if (platform == 'R') {
 							RockPlatform p = RockPlatform(x, y, 16, 16, textureManager, "Rock");
 							levelOne.push_back(p);
+							
 						}
 						else if (platform == 'F') {
 							FlowerPlatform p = FlowerPlatform(x, y, 16, 16, textureManager, "Flower");
 							levelOne.push_back(p);
+							
 						}
 						else if (platform == 'C') {
 							CratePlatform p = CratePlatform(x, y, 16, 16, textureManager, "Crate");
 							levelOne.push_back(p);
+							
 						}
+					// By the end of the loop collisionSectionRows and collisionSectionColumns will be set to the values of the last platform
+						collisionSectionColumns = std::ceil(x / 620.f);
 					}
+					collisionSectionRows = std::ceil(y / 360.f);
+
 					y += 16;
 				}
+				std::cout << collisionSectionColumns << " " << collisionSectionRows << std::endl;
+				
 			}
 		}
 
 
 };
 
+//std::vector<Platform> Levels::addPlatformToCollisionSectionLevelOne(Platform platform) {
+	//return 
+//}
+
 std::vector<Platform> Levels::getLevelOne() {
+	return levelOne;
+}
+
+std::vector<Platform> Levels::getPlatformNearPlayerLevelOne(float playerX, float playerY) {
 	return levelOne;
 }

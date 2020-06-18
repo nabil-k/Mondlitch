@@ -9,6 +9,7 @@ class TextureManager {
 	std::map<std::string, sf::Texture> textures;
 	sf::Image LevelSpriteSheet;
 	sf::Image CharacterSpriteSheet;
+	sf::Image SkySpriteSheet;
 
 
 	public:
@@ -25,6 +26,7 @@ class TextureManager {
 
 		sf::Texture DirtTexture = sf::Texture();
 		DirtTexture.loadFromImage(LevelSpriteSheet, sf::IntRect(112, 9, 16, 16));
+		DirtTexture.setRepeated(true);
 		textures.insert({ "Dirt", DirtTexture });
 
 		sf::Texture WallTexture = sf::Texture();
@@ -42,6 +44,17 @@ class TextureManager {
 		sf::Texture CrateTexture = sf::Texture();
 		CrateTexture.loadFromImage(LevelSpriteSheet, sf::IntRect(130, 64, 12, 16));
 		textures.insert({ "Crate", CrateTexture });
+
+		sf::Texture TreeTexture = sf::Texture();
+		TreeTexture.loadFromImage(LevelSpriteSheet, sf::IntRect(36, 0, 73, 128));
+		textures.insert({ "Tree", TreeTexture });
+
+		// Backdrop Assets
+		SkySpriteSheet.loadFromFile("./assets/sky.png");
+		sf::Texture SkyTexture = sf::Texture();
+		SkyTexture.loadFromImage(SkySpriteSheet, sf::IntRect(0, 0, 1280, 720));
+		SkyTexture.setRepeated(true);
+		textures.insert({ "Sky", SkyTexture });
 
 		// Character Texture Assets
 		CharacterSpriteSheet.loadFromFile("./assets/characters.png");

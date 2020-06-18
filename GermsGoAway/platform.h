@@ -32,6 +32,7 @@ class Platform {
 		
 		}
 
+
 };
 
 int Platform::getWidth() {

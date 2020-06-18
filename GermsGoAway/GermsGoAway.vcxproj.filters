@@ -50,5 +50,8 @@
     <ClInclude Include="Levels.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Background.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

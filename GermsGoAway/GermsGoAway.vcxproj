@@ -138,6 +138,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Background.h" />
     <ClInclude Include="CratePlatform.h" />
     <ClInclude Include="DirtPlatform.h" />
     <ClInclude Include="FlowerPlatform.h" />
