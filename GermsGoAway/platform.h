@@ -8,7 +8,6 @@ class Platform {
 	float x, y;
 	sf::Texture texture;
 	sf::Sprite sprite;
-	sf::Image LevelSpriteSheet;
 	TextureManager* textureManager;
 	sf::String type;
 	

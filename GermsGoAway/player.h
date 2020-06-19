@@ -21,7 +21,6 @@ class Player {
 	sf::Clock dt;
 	std::vector<sf::Texture> textures;
 	sf::Sprite sprite;
-	sf::Image CharacterSpriteSheet;
 	TextureManager* textureManager;
 
 

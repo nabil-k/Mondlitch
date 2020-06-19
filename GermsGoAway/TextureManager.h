@@ -10,6 +10,9 @@ class TextureManager {
 	sf::Image LevelSpriteSheet;
 	sf::Image CharacterSpriteSheet;
 	sf::Image SkySpriteSheet;
+	sf::Image MainMenuBackgroundSpriteSheet;
+	sf::Image MainMenuTitleSpriteSheet;
+
 
 
 	public:
@@ -49,6 +52,11 @@ class TextureManager {
 		TreeTexture.loadFromImage(LevelSpriteSheet, sf::IntRect(36, 0, 73, 128));
 		textures.insert({ "Tree", TreeTexture });
 
+
+		sf::Texture HoleTexture = sf::Texture();
+		HoleTexture.loadFromImage(LevelSpriteSheet, sf::IntRect(144, 112, 16, 16));
+		textures.insert({ "Hole", HoleTexture });
+
 		// Backdrop Assets
 		SkySpriteSheet.loadFromFile("./assets/sky.png");
 		sf::Texture SkyTexture = sf::Texture();
@@ -82,6 +90,18 @@ class TextureManager {
 		sf::Texture characterTextureJump_2 = sf::Texture();
 		characterTextureJump_2.loadFromImage(CharacterSpriteSheet, sf::IntRect(166, 72, 18, 23));
 		textures.insert({ "Player_Jump_2", characterTextureJump_2 });
+
+		// Main Menu Texture Assets
+		MainMenuBackgroundSpriteSheet.loadFromFile("./assets/menu_background.png");
+		MainMenuTitleSpriteSheet.loadFromFile("./assets/title.png");
+
+		sf::Texture MainMenuBackgroundTexture = sf::Texture();
+		MainMenuBackgroundTexture.loadFromImage(MainMenuBackgroundSpriteSheet, sf::IntRect(0, 0, 1280, 720));
+		textures.insert({ "MainMenu_Background", MainMenuBackgroundTexture });
+
+		sf::Texture MainMenuTitleTexture = sf::Texture();
+		MainMenuTitleTexture.loadFromImage(MainMenuTitleSpriteSheet, sf::IntRect(0, 0, 620, 280));
+		textures.insert({ "MainMenu_Title", MainMenuTitleTexture });
 
 	}
 

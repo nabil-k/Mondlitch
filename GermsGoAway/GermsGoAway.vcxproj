@@ -144,6 +144,7 @@
     <ClInclude Include="FlowerPlatform.h" />
     <ClInclude Include="GrassPlatform.h" />
     <ClInclude Include="Levels.h" />
+    <ClInclude Include="MainMenu.h" />
     <ClInclude Include="platform.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="RockPlatform.h" />

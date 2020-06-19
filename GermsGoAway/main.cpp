@@ -2,6 +2,7 @@
 #include <thread>
 #include <vector>
 #include <SFML/Graphics.hpp>
+#include "MainMenu.h"
 #include "Player.h"
 #include "Platform.h"
 #include "TextureManager.h"
@@ -9,8 +10,11 @@
 #include "Background.h"
 
 
+
 int main()
 {
+	bool gameStarted = false;
+
 	TextureManager* textureManager = new TextureManager();
 
 	// Window Properties
@@ -20,6 +24,8 @@ int main()
 	sf::View view(sf::FloatRect(0.f, 600.f, 480.f, 270.f));
 	window.setView(view);
 
+	// Preparing Main Menu
+	MainMenu mainMenu = MainMenu(textureManager);
 
 	// Preparing Player
 	Player player = Player(textureManager);
@@ -50,23 +56,38 @@ int main()
 				window.close();
 		}
 
-		// Level update & render
-		background.update(player.getVelocityX());
-		window.draw(background.getMainSprite());
-		window.draw(background.getLayerOneSprite());
+		if (!gameStarted) {
+			view.setSize(1280.f, 720.f);
+			view.setCenter(640.f, 360.f);
+			mainMenu.update();
+			window.draw(mainMenu.getBackground());
+			window.draw(mainMenu.getTitle());
+			gameStarted = mainMenu.doesGameStart();
 
-		for (auto &platform: levelOne) {
-			
-			platform.update();
-			window.draw(platform.getSprite());
+			window.setView(view);
 		}
-		
-		// Player update & render
-		player.update(levels.getPlatformNearPlayerLevelOne(player.getX(), player.getY()), clock.getElapsedTime().asSeconds());
-		window.draw(player.getSprite());
-		
-		view.setCenter(player.getX(), player.getY() - 16.f);
-		window.setView(view);
+
+		if (gameStarted) {
+			// Level update & render
+			background.update(player.getVelocityX());
+			window.draw(background.getMainSprite());
+			window.draw(background.getLayerOneSprite());
+
+			for (auto &platform : levelOne) {
+
+				platform.update();
+				window.draw(platform.getSprite());
+			}
+
+			// Player update & render
+			player.update(levels.getPlatformNearPlayerLevelOne(player.getX(), player.getY()), clock.getElapsedTime().asSeconds());
+			window.draw(player.getSprite());
+
+			view.setCenter(player.getX(), player.getY() - 16.f);
+			view.setSize(480.f, 270.f);
+			window.setView(view);
+		}
+
 
 		window.display();
 	}

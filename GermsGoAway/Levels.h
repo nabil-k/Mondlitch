@@ -73,6 +73,11 @@ class Levels {
 							levelOne.push_back(p);
 							
 						}
+						else if (platform == 'H') {
+							Platform p = Platform(x, y, 16, 16, textureManager, "Hole");
+							levelOne.push_back(p);
+
+						}
 					// By the end of the loop collisionSectionRows and collisionSectionColumns will be set to the values of the last platform
 						collisionSectionColumns = std::ceil(x / 640.f);
 					}
