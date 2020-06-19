@@ -145,7 +145,7 @@ void Player::changeSpriteTexture() {
 }
 
 void Player::update(std::vector<Platform> levelPlatforms, float dt) {
-	std::cout << pos_y << std::endl;
+	
 	if (checkIfPlayerFell()) {
 		vel_x = 0;
 		vel_y = 0;
@@ -267,7 +267,7 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 					sprite.setPosition(pos_x, adjustment);
 					fall = false;
 					vel_y = 0;
-					std::cout << "bottom" << std::endl;
+					
 				}
 			}
 
@@ -283,7 +283,7 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 					topY = pos_y;
 					sprite.setPosition(pos_x, adjustment);
 					vel_y = 0;
-					std::cout << "top" << std::endl;
+					
 				}
 			}
 
@@ -298,7 +298,7 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 						leftX = pos_x;
 						sprite.setPosition(pos_x, pos_y);
 						vel_x = 0;
-						std::cout << "left" << std::endl;
+						
 					}
 				}
 			}
@@ -316,7 +316,7 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 						rightX = (pos_x + width);
 						sprite.setPosition(pos_x, pos_y);
 						vel_x = 0;
-						std::cout << "right" << std::endl;
+						
 					}
 				}
 			}

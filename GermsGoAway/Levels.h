@@ -19,12 +19,12 @@ class Levels {
 	std::ifstream levelOneFile;
 	std::string row;
 	std::vector<Platform> levelOne;
+	std::vector< std::vector < std::vector<Platform> > > levelOneCollisionSections;
 	float collisionSectionRows = 0;
 	float collisionSectionColumns = 0;
 
 	public:
 		std::vector<Platform> getLevelOne();
-		std::vector<Platform> addPlatformToCollisionSectionLevelOne(Platform platform);
 		std::vector<Platform> getPlatformNearPlayerLevelOne(float playerX, float playerY);
 
 		Levels(TextureManager* textureManager) {
@@ -74,13 +74,38 @@ class Levels {
 							
 						}
 					// By the end of the loop collisionSectionRows and collisionSectionColumns will be set to the values of the last platform
-						collisionSectionColumns = std::ceil(x / 620.f);
+						collisionSectionColumns = std::ceil(x / 640.f);
 					}
 					collisionSectionRows = std::ceil(y / 360.f);
 
 					y += 16;
 				}
-				std::cout << collisionSectionColumns << " " << collisionSectionRows << std::endl;
+				
+				// Adding platforms to their collision sections
+				for (int r = 0; r < collisionSectionRows; r++) {
+					std::vector< std::vector<Platform> > row;
+					levelOneCollisionSections.push_back(row);
+					for (int c = 0; c < collisionSectionColumns; c++) {
+						std::vector<Platform> column;
+						levelOneCollisionSections[r].push_back(column);
+					}
+				}
+
+				for (int i = 0; i < levelOne.size(); i++) {
+					Platform p = levelOne[i];
+					
+					int sectionRowIndex = std::ceil(p.getY() / 360) - 1;
+					if (sectionRowIndex == -1) {
+						sectionRowIndex = 0;
+					}
+
+					int sectionColumnIndex = std::ceil(p.getX() / 640) - 1;
+					if (sectionColumnIndex == -1) {
+						sectionColumnIndex = 0;
+					}
+					
+					levelOneCollisionSections[sectionRowIndex][sectionColumnIndex].push_back(levelOne[i]);
+				}
 				
 			}
 		}
@@ -97,5 +122,8 @@ std::vector<Platform> Levels::getLevelOne() {
 }
 
 std::vector<Platform> Levels::getPlatformNearPlayerLevelOne(float playerX, float playerY) {
-	return levelOne;
+	int PlayerColumnIndex = std::ceil(playerX / 640.f) - 1;
+	int PlayerRowIndex = std::ceil(playerY / 360.f) - 1;
+	std::cout << "Getting nearby platforms" << std::endl;
+	return levelOneCollisionSections[PlayerRowIndex][PlayerColumnIndex];
 }

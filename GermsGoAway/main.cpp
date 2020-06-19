@@ -62,7 +62,7 @@ int main()
 		}
 		
 		// Player update & render
-		player.update(levelOne, clock.getElapsedTime().asSeconds());
+		player.update(levels.getPlatformNearPlayerLevelOne(player.getX(), player.getY()), clock.getElapsedTime().asSeconds());
 		window.draw(player.getSprite());
 		
 		view.setCenter(player.getX(), player.getY() - 16.f);
