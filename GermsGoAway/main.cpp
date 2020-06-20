@@ -32,7 +32,8 @@ int main()
 
 	// Preparing Level
 	Levels levels = Levels(textureManager);
-	std::vector<Platform> levelOne = levels.getLevelOne();
+	std::vector<Platform> levelOneStructures = levels.getLevelOneStructures();
+	std::vector<Enemy> levelOneEnemies = levels.getLevelOneEnemies();
 
 	// Preparing Background
 	Background background = Background(textureManager);
@@ -73,18 +74,32 @@ int main()
 			window.draw(background.getMainSprite());
 			window.draw(background.getLayerOneSprite());
 
-			for (auto &platform : levelOne) {
-
+			for (auto &platform : levelOneStructures) {
 				platform.update();
 				window.draw(platform.getSprite());
+			}
+
+			
+
+			for (auto &enemy : levelOneEnemies) {
+				enemy.update(levels.getPlatformNearPlayerLevelOne(enemy.getX(), enemy.getY()));
+				window.draw(enemy.getSprite());
 			}
 
 			// Player update & render
 			player.update(levels.getPlatformNearPlayerLevelOne(player.getX(), player.getY()), clock.getElapsedTime().asSeconds());
 			window.draw(player.getSprite());
 
-			view.setCenter(player.getX(), player.getY() - 16.f);
 			view.setSize(480.f, 270.f);
+			if (player.getX() >= 240.f) {
+				view.setCenter(player.getX(), player.getY() - 16.f);
+			}
+			else {
+				view.setCenter(240.f, player.getY() - 16.f);
+			}
+
+			
+			
 			window.setView(view);
 		}
 

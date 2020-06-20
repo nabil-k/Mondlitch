@@ -91,6 +91,22 @@ class TextureManager {
 		characterTextureJump_2.loadFromImage(CharacterSpriteSheet, sf::IntRect(166, 72, 18, 23));
 		textures.insert({ "Player_Jump_2", characterTextureJump_2 });
 
+		sf::Texture EnemyTextureIdle = sf::Texture();
+		EnemyTextureIdle.loadFromImage(CharacterSpriteSheet, sf::IntRect(9, 12, 18, 23));
+		textures.insert({ "Enemy_Idle", EnemyTextureIdle });
+
+		sf::Texture EnemyTextureWalk_1 = sf::Texture();
+		EnemyTextureWalk_1.loadFromImage(CharacterSpriteSheet, sf::IntRect(40, 12, 18, 23));
+		textures.insert({ "Enemy_Walk_1", EnemyTextureWalk_1 });
+
+		sf::Texture EnemyTextureWalk_2 = sf::Texture();
+		EnemyTextureWalk_2.loadFromImage(CharacterSpriteSheet, sf::IntRect(71, 12, 19, 23));
+		textures.insert({ "Enemy_Walk_2", EnemyTextureWalk_2 });
+
+		sf::Texture EnemyTextureWalk_3 = sf::Texture();
+		EnemyTextureWalk_3.loadFromImage(CharacterSpriteSheet, sf::IntRect(104, 12, 19, 23));
+		textures.insert({ "Enemy_Walk_3", EnemyTextureWalk_3 });
+
 		// Main Menu Texture Assets
 		MainMenuBackgroundSpriteSheet.loadFromFile("./assets/menu_background.png");
 		MainMenuTitleSpriteSheet.loadFromFile("./assets/title.png");

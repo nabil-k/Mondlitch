@@ -141,6 +141,7 @@
     <ClInclude Include="Background.h" />
     <ClInclude Include="CratePlatform.h" />
     <ClInclude Include="DirtPlatform.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="FlowerPlatform.h" />
     <ClInclude Include="GrassPlatform.h" />
     <ClInclude Include="Levels.h" />
