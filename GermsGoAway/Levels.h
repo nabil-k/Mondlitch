@@ -26,8 +26,8 @@ class Levels {
 	float collisionSectionColumns = 0;
 
 	public:
-		std::vector<Platform> getLevelOneStructures();
-		std::vector<Enemy> getLevelOneEnemies();
+		std::vector<Platform>& getLevelOneStructures();
+		std::vector<Enemy>& getLevelOneEnemies();
 		std::vector<Platform> getPlatformNearPlayerLevelOne(float playerX, float playerY);
 
 		Levels(TextureManager* textureManager) {
@@ -85,13 +85,17 @@ class Levels {
 							Enemy e = Enemy(x, y, textureManager);
 							std::cout << "Enemy Created: " << x << "," << y << std::endl;
 							levelOneEnemies.push_back(e);
-
+						}
+						else if (platform == 'T') {
+							Platform p = Platform(x, y, 16, 16, textureManager, "Turn");
+							levelOneStructures.push_back(p);
+						
 						}
 
 					// By the end of the loop collisionSectionRows and collisionSectionColumns will be set to the values of the last platform
-						collisionSectionColumns = std::ceil(x / 640.f);
+						collisionSectionColumns = std::ceil(x / 320.f);
 					}
-					collisionSectionRows = std::ceil(y / 360.f);
+					collisionSectionRows = std::ceil(y / 180.f);
 
 					y += 16;
 				}
@@ -109,12 +113,12 @@ class Levels {
 				for (int i = 0; i < levelOneStructures.size(); i++) {
 					Platform p = levelOneStructures[i];
 					
-					int sectionRowIndex = std::ceil(p.getY() / 360) - 1;
+					int sectionRowIndex = std::ceil(p.getY() / 180) - 1;
 					if (sectionRowIndex == -1) {
 						sectionRowIndex = 0;
 					}
 
-					int sectionColumnIndex = std::ceil(p.getX() / 640) - 1;
+					int sectionColumnIndex = std::ceil(p.getX() / 320) - 1;
 					if (sectionColumnIndex == -1) {
 						sectionColumnIndex = 0;
 					}
@@ -129,17 +133,17 @@ class Levels {
 };
 
 
-std::vector<Platform> Levels::getLevelOneStructures() {
+std::vector<Platform>& Levels::getLevelOneStructures() {
 	return levelOneStructures;
 }
 
-std::vector<Enemy> Levels::getLevelOneEnemies() {
+std::vector<Enemy>& Levels::getLevelOneEnemies() {
 	return levelOneEnemies;
 }
 
 std::vector<Platform> Levels::getPlatformNearPlayerLevelOne(float playerX, float playerY) {
-	int PlayerColumnIndex = std::ceil(playerX / 640.f) - 1;
-	int PlayerRowIndex = std::ceil(playerY / 360.f) - 1;
+	int PlayerColumnIndex = std::ceil(playerX / 320.f) - 1;
+	int PlayerRowIndex = std::ceil(playerY / 180.f) - 1;
 
 	if (PlayerColumnIndex == -1) {
 		PlayerColumnIndex = 0;

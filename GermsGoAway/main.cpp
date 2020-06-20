@@ -21,7 +21,7 @@ int main()
 	sf::RenderWindow window(sf::VideoMode(1280, 720), "Germs Go Away");
 	window.setFramerateLimit(60);
 	// View Properties
-	sf::View view(sf::FloatRect(0.f, 600.f, 480.f, 270.f));
+	sf::View view(sf::FloatRect(0.f, 0.f, 1280.f, 720.f));
 	window.setView(view);
 
 	// Preparing Main Menu
@@ -58,8 +58,8 @@ int main()
 		}
 
 		if (!gameStarted) {
-			view.setSize(1280.f, 720.f);
-			view.setCenter(640.f, 360.f);
+			//view.setSize(1280.f, 720.f);
+			//view.setCenter(640.f, 360.f);
 			mainMenu.update();
 			window.draw(mainMenu.getBackground());
 			window.draw(mainMenu.getTitle());

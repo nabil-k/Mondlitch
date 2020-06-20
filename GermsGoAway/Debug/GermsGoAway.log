@@ -1,15 +1,16 @@
 ﻿  main.cpp
-c:\users\duoma\desktop\germsgoaway\germsgoaway\player.h(129): warning C4244: 'argument': conversion from 'float' to 'const unsigned int', possible loss of data
-c:\users\duoma\desktop\germsgoaway\germsgoaway\player.h(243): warning C4101: 'adjustment': unreferenced local variable
+c:\users\duoma\desktop\germsgoaway\germsgoaway\player.h(128): warning C4244: 'argument': conversion from 'float' to 'const unsigned int', possible loss of data
+c:\users\duoma\desktop\germsgoaway\germsgoaway\player.h(244): warning C4101: 'adjustment': unreferenced local variable
 c:\users\duoma\desktop\germsgoaway\germsgoaway\main.cpp(9): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-c:\users\duoma\desktop\germsgoaway\germsgoaway\enemy.h(91): warning C4101: 'adjustment': unreferenced local variable
+c:\users\duoma\desktop\germsgoaway\germsgoaway\enemy.h(116): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\duoma\desktop\germsgoaway\germsgoaway\enemy.h(152): warning C4101: 'adjustment': unreferenced local variable
 c:\users\duoma\desktop\germsgoaway\germsgoaway\levels.h(47): warning C4244: 'argument': conversion from 'float' to 'const unsigned int', possible loss of data
-c:\users\duoma\desktop\germsgoaway\germsgoaway\levels.h(109): warning C4018: '<': signed/unsigned mismatch
-c:\users\duoma\desktop\germsgoaway\germsgoaway\levels.h(112): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\duoma\desktop\germsgoaway\germsgoaway\levels.h(117): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\duoma\desktop\germsgoaway\germsgoaway\levels.h(141): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\duoma\desktop\germsgoaway\germsgoaway\levels.h(142): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\duoma\desktop\germsgoaway\germsgoaway\levels.h(113): warning C4018: '<': signed/unsigned mismatch
+c:\users\duoma\desktop\germsgoaway\germsgoaway\levels.h(116): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\duoma\desktop\germsgoaway\germsgoaway\levels.h(121): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\duoma\desktop\germsgoaway\germsgoaway\levels.h(145): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\duoma\desktop\germsgoaway\germsgoaway\levels.h(146): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
 c:\users\duoma\desktop\germsgoaway\germsgoaway\background.h(34): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 c:\users\duoma\desktop\germsgoaway\germsgoaway\main.cpp(44): warning C4101: 'mouse': unreferenced local variable
-c:\users\duoma\desktop\germsgoaway\germsgoaway\texturemanager.h(134): warning C4715: 'TextureManager::getTexture': not all control paths return a value
+c:\users\duoma\desktop\germsgoaway\germsgoaway\texturemanager.h(145): warning C4715: 'TextureManager::getTexture': not all control paths return a value
   GermsGoAway.vcxproj -> C:\Users\duoma\Desktop\GermsGoAway\Debug\GermsGoAway.exe

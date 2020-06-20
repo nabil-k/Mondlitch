@@ -13,15 +13,23 @@ class Enemy {
 	float gravity = 32;
 	bool fall = true;
 	TextureManager* textureManager;
-	std::vector<sf::Texture> textures;
 	sf::Sprite sprite;
-	sf::Clock dt;
+	// for animations
+	sf::Clock animateTime;
+	float maxKeyframeTime;
+	float timeSinceLastKeyframe;
+	float walkFrame;
+
 
 	public:
 		int getWidth(), getHeight();
 		float getX(), getY();
 		float getVelocityX();
+		bool canMoveLeft, canMoveRight;
+		void moveLeft();
+		void moveRight();
 		sf::Sprite getSprite();
+		void changeSpriteTexture();
 		void update(std::vector<Platform> levelPlatforms);
 
 		Enemy(float x, float y, TextureManager* textureManager) {
@@ -32,16 +40,12 @@ class Enemy {
 			height = 20;
 			vel_x = 0;
 			vel_y = 0;
+			canMoveLeft = false;
+			canMoveRight = true;
+			this->textureManager = textureManager;
 
-			this->textureManager = textureManager;;
-			textures.push_back(textureManager->getTexture("Enemy_Idle"));
-			textures.push_back(textureManager->getTexture("Enemy_Walk_1"));
-			textures.push_back(textureManager->getTexture("Enemy_Walk_2"));
-			textures.push_back(textureManager->getTexture("Enemy_Walk_3"));
-
-			sprite.setTexture((textureManager->getTexture("Enemy_Idle")));
+			sprite.setTexture(textureManager->getEnemyTexture(0));
 			sprite.setOrigin({ 0, 0 });
-
 			sprite.setPosition(sf::Vector2f(pos_x, pos_y));
 		}
 
@@ -68,6 +72,55 @@ float Enemy::getVelocityX() {
 	return vel_x;
 }
 
+void Enemy::moveLeft() {
+	if (vel_x > -1) {
+		vel_x += -gravity * 0.001802f;
+	}
+
+	pos_x += vel_x;
+}
+
+
+void Enemy::moveRight() {
+	if (vel_x < 1) {
+		vel_x += gravity * 0.001802f;
+	}
+
+	pos_x += vel_x;
+}
+
+void Enemy::changeSpriteTexture() {
+	timeSinceLastKeyframe = animateTime.getElapsedTime().asSeconds();
+
+	// Flips sprite based on if they're moving left/right
+	if (vel_x > 0) {
+		sprite.setOrigin({ 0, 0 });
+		sprite.setScale({ 1, 1 });
+	}
+	else if (vel_x < 0) {
+		sprite.setOrigin({ sprite.getLocalBounds().width, 0 });
+		sprite.setScale({ -1, 1 });
+	}
+
+	// When enemy is on the ground
+	if (vel_y == 0) {
+		if (vel_x == 0) {
+			sprite.setTexture(textureManager->getEnemyTexture(0));
+		}
+		else if (vel_x > 0 || vel_x < 0) {
+			if (timeSinceLastKeyframe > (maxKeyframeTime - (std::abs(vel_x) * .3))) {
+				++walkFrame;
+				if (walkFrame > 3) {
+					walkFrame = 1;
+				}
+				sprite.setTexture(textureManager->getEnemyTexture(walkFrame));
+				animateTime.restart();
+			}
+		}
+	}
+}
+
+
 void Enemy::update(std::vector<Platform> levelPlatforms) {
 
 	// Controls how player falls
@@ -78,6 +131,14 @@ void Enemy::update(std::vector<Platform> levelPlatforms) {
 		pos_y += vel_y;
 		sprite.move(0.f, vel_y);
 
+	}
+
+	if (canMoveLeft) {
+		moveLeft();
+	}
+
+	if (canMoveRight) {
+		moveRight();
 	}
 
 	// Player's hitbox
@@ -114,7 +175,6 @@ void Enemy::update(std::vector<Platform> levelPlatforms) {
 					vel_y = 0;
 					sprite.setPosition(pos_x, adjustment);
 		
-
 				}
 			}
 			// Checks top collisions
@@ -141,6 +201,8 @@ void Enemy::update(std::vector<Platform> levelPlatforms) {
 						leftX = pos_x;
 						sprite.setPosition(pos_x, pos_y);
 						vel_x = 0;
+						canMoveLeft = false;
+						canMoveRight = true;
 				
 					}
 				}
@@ -155,6 +217,8 @@ void Enemy::update(std::vector<Platform> levelPlatforms) {
 						rightX = (pos_x + width);
 						sprite.setPosition(pos_x, pos_y);
 						vel_x = 0;
+						canMoveLeft = true;
+						canMoveRight = false;
 						
 					}
 				}
@@ -164,6 +228,7 @@ void Enemy::update(std::vector<Platform> levelPlatforms) {
 				fall = true;
 			}
 		}
+		changeSpriteTexture();
 	}
 }
 

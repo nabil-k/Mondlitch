@@ -12,11 +12,14 @@ class TextureManager {
 	sf::Image SkySpriteSheet;
 	sf::Image MainMenuBackgroundSpriteSheet;
 	sf::Image MainMenuTitleSpriteSheet;
+	std::vector<sf::Texture> enemyTextures;
 
 
 
 	public:
 		sf::Texture& getTexture(std::string textureName);
+		sf::Texture& getEnemyTexture(int index);
+
 
 	TextureManager() {
 		
@@ -92,19 +95,23 @@ class TextureManager {
 		textures.insert({ "Player_Jump_2", characterTextureJump_2 });
 
 		sf::Texture EnemyTextureIdle = sf::Texture();
-		EnemyTextureIdle.loadFromImage(CharacterSpriteSheet, sf::IntRect(9, 12, 18, 23));
+		EnemyTextureIdle.loadFromImage(CharacterSpriteSheet, sf::IntRect(9, 11, 18, 20));
+		enemyTextures.push_back(EnemyTextureIdle);
 		textures.insert({ "Enemy_Idle", EnemyTextureIdle });
 
 		sf::Texture EnemyTextureWalk_1 = sf::Texture();
-		EnemyTextureWalk_1.loadFromImage(CharacterSpriteSheet, sf::IntRect(40, 12, 18, 23));
+		EnemyTextureWalk_1.loadFromImage(CharacterSpriteSheet, sf::IntRect(40, 11, 18, 20));
+		enemyTextures.push_back(EnemyTextureWalk_1);
 		textures.insert({ "Enemy_Walk_1", EnemyTextureWalk_1 });
 
 		sf::Texture EnemyTextureWalk_2 = sf::Texture();
-		EnemyTextureWalk_2.loadFromImage(CharacterSpriteSheet, sf::IntRect(71, 12, 19, 23));
+		EnemyTextureWalk_2.loadFromImage(CharacterSpriteSheet, sf::IntRect(71, 11, 19, 20));
+		enemyTextures.push_back(EnemyTextureWalk_2);
 		textures.insert({ "Enemy_Walk_2", EnemyTextureWalk_2 });
 
 		sf::Texture EnemyTextureWalk_3 = sf::Texture();
-		EnemyTextureWalk_3.loadFromImage(CharacterSpriteSheet, sf::IntRect(104, 12, 19, 23));
+		EnemyTextureWalk_3.loadFromImage(CharacterSpriteSheet, sf::IntRect(104, 11, 19, 20));
+		enemyTextures.push_back(EnemyTextureWalk_3);
 		textures.insert({ "Enemy_Walk_3", EnemyTextureWalk_3 });
 
 		// Main Menu Texture Assets
@@ -122,6 +129,10 @@ class TextureManager {
 	}
 
 };
+
+sf::Texture& TextureManager::getEnemyTexture(int index) {
+	return enemyTextures.at(index);
+}
 
 sf::Texture& TextureManager::getTexture(std::string textureName) {
 	if (textures.find(textureName) != textures.end()) {

@@ -39,7 +39,7 @@ public:
 	float walkFrame;
 	bool checkIfPlayerFell();
 
-	Player(TextureManager* textureManagerInitialized) {
+	Player(TextureManager* textureManager) {
 		pos_x = 100.f;
 		pos_y = 300.f;
 		width = 18;
@@ -51,7 +51,6 @@ public:
 		timeSinceLastKeyframe = 0;
 		walkFrame = 1;
 
-		this->textureManager = textureManagerInitialized;
 		// Preloading all player textures
 		this->textures.push_back(textureManager->getTexture("Player_Idle"));
 		this->textures.push_back(textureManager->getTexture("Player_Walk_1"));
@@ -131,6 +130,8 @@ void Player::changeSpriteTexture() {
 			}
 		}
 	}
+
+	// Animation for above ground
 	else if (vel_y > 0) {
 		sprite.setTexture(textures.at(5));
 		animateTime.restart();
@@ -246,7 +247,7 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 	bool leftXCollission, rightXCollision, topYCollision, bottomYCollision;
 
 	for (auto &platform : levelPlatforms) {
-		if (platform.isCollidable()) {
+		if (platform.isCollidable() && platform.getType() != "Turn") {
 			leftXCollission = (leftX > platform.getX()) && (leftX < (platform.getX() + platform.getWidth()));
 			rightXCollision = (rightX > platform.getX()) && (rightX < (platform.getX() + platform.getWidth()));
 			topYCollision = (topY > platform.getY()) && (topY < (platform.getY() + platform.getHeight()));

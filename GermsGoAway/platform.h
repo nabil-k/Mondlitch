@@ -8,31 +8,36 @@ class Platform {
 	float x, y;
 	sf::Texture texture;
 	sf::Sprite sprite;
-	TextureManager* textureManager;
 	sf::String type;
-	
 
 	public:
 		int getWidth(), getHeight();
 		float getX(), getY();
 		bool isCollidable();
 		void update();
+		std::string getType();
 		sf::Sprite getSprite();
 
-		Platform(float x, float y, int width, int height, TextureManager* textureManagerInitialized, sf::String type) {
+		Platform(float x, float y, int width, int height, TextureManager* textureManager, sf::String type) {
 			this->type = type;
 			this->x = x;
 			this->y = y;
 			this->width = width;
 			this-> height = height;
-			this->textureManager = textureManagerInitialized;
-			sprite.setTexture(textureManager->getTexture(type));
+			if (type != "Turn") {
+				sprite.setTexture(textureManager->getTexture(type));
+			}
+			
 			sprite.setPosition(sf::Vector2f(x, y));
 		
 		}
 
 
 };
+
+std::string Platform::getType() {
+	return type;
+}
 
 int Platform::getWidth() {
 	return width;
@@ -58,6 +63,9 @@ bool Platform::isCollidable() {
 		return true;
 	}
 	else if (type == "Wall") {
+		return true;
+	}
+	else if (type == "Turn") {
 		return true;
 	}
 	else {
