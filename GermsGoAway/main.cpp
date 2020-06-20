@@ -112,8 +112,9 @@ int main()
 				}
 			}
 			else {
+				std::cout << "DIED?" << std::endl;
 				cameraAdjusted = false;
-				float cameraXadjustment = 3.f;
+				float cameraXadjustment = 3.f * (cameraX * 0.0015);
 				float cameraYadjustment = cameraXadjustment * cameraSlope;
 				view.move(-cameraXadjustment, -cameraYadjustment);
 				if (view.getCenter().x <= cameraX_Spawn) {

@@ -1,7 +1,22 @@
 ﻿  main.cpp
+c:\users\duoma\desktop\germsgoaway\germsgoaway\player.h(7): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+c:\users\duoma\desktop\germsgoaway\germsgoaway\enemy.h(116): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+c:\users\duoma\desktop\germsgoaway\germsgoaway\enemy.h(152): warning C4101: 'adjustment': unreferenced local variable
+c:\users\duoma\desktop\germsgoaway\germsgoaway\player.h(131): warning C4244: 'argument': conversion from 'float' to 'const unsigned int', possible loss of data
+c:\users\duoma\desktop\germsgoaway\germsgoaway\player.h(252): warning C4101: 'adjustment': unreferenced local variable
+c:\users\duoma\desktop\germsgoaway\germsgoaway\main.cpp(9): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+c:\users\duoma\desktop\germsgoaway\germsgoaway\levels.h(47): warning C4244: 'argument': conversion from 'float' to 'const unsigned int', possible loss of data
+c:\users\duoma\desktop\germsgoaway\germsgoaway\levels.h(113): warning C4018: '<': signed/unsigned mismatch
+c:\users\duoma\desktop\germsgoaway\germsgoaway\levels.h(116): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\duoma\desktop\germsgoaway\germsgoaway\levels.h(121): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\duoma\desktop\germsgoaway\germsgoaway\levels.h(145): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\duoma\desktop\germsgoaway\germsgoaway\levels.h(146): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\duoma\desktop\germsgoaway\germsgoaway\background.h(34): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\duoma\desktop\germsgoaway\germsgoaway\main.cpp(117): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\duoma\desktop\germsgoaway\germsgoaway\main.cpp(51): warning C4101: 'mouse': unreferenced local variable
   Generating code
-  2 of 311 functions ( 0.6%) were compiled, the rest were copied from previous compilation.
+  1 of 779 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    4 functions had inline decision re-evaluated but remain unchanged
+    0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   GermsGoAway.vcxproj -> C:\Users\duoma\Desktop\GermsGoAway\Release\GermsGoAway.exe
