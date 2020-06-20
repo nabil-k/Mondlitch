@@ -22,6 +22,13 @@ int main()
 	window.setFramerateLimit(60);
 	// View Properties
 	sf::View view(sf::FloatRect(0.f, 0.f, 1280.f, 720.f));
+	float cameraX;
+	float cameraY;
+	float cameraX_Spawn;
+	float cameraY_Spawn;
+	float cameraSlope;
+	bool cameraAdjusted = true;
+
 	window.setView(view);
 
 	// Preparing Main Menu
@@ -58,8 +65,6 @@ int main()
 		}
 
 		if (!gameStarted) {
-			//view.setSize(1280.f, 720.f);
-			//view.setCenter(640.f, 360.f);
 			mainMenu.update();
 			window.draw(mainMenu.getBackground());
 			window.draw(mainMenu.getTitle());
@@ -69,6 +74,7 @@ int main()
 		}
 
 		if (gameStarted) {
+
 			// Level update & render
 			background.update(player.getVelocityX());
 			window.draw(background.getMainSprite());
@@ -87,19 +93,39 @@ int main()
 			}
 
 			// Player update & render
-			player.update(levels.getPlatformNearPlayerLevelOne(player.getX(), player.getY()), clock.getElapsedTime().asSeconds());
+			player.update(levels.getPlatformNearPlayerLevelOne(player.getX(), player.getY()), levelOneEnemies, clock.getElapsedTime().asSeconds());
 			window.draw(player.getSprite());
 
 			view.setSize(480.f, 270.f);
-			if (player.getX() >= 240.f) {
-				view.setCenter(player.getX(), player.getY() - 16.f);
+
+			if (!player.hasDied() && cameraAdjusted) {
+				cameraX = player.getX();
+				cameraY = player.getY() - 16.f;
+				cameraX_Spawn = 240.f;
+				cameraY_Spawn = 650.f;
+				cameraSlope = (cameraY_Spawn - cameraY) / (cameraX_Spawn - cameraX);
+				if (player.getX() >= 240.f) {
+					view.setCenter(cameraX, cameraY);
+				}
+				else {
+					view.setCenter(cameraX_Spawn, cameraY);
+				}
 			}
 			else {
-				view.setCenter(240.f, player.getY() - 16.f);
+				cameraAdjusted = false;
+				float cameraXadjustment = 3.f;
+				float cameraYadjustment = cameraXadjustment * cameraSlope;
+				view.move(-cameraXadjustment, -cameraYadjustment);
+				if (view.getCenter().x <= cameraX_Spawn) {
+					cameraAdjusted = true;
+				}
+				
 			}
 
-			
-			
+
+
+
+	
 			window.setView(view);
 		}
 

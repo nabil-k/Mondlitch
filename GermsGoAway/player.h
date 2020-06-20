@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "TextureManager.h"
 #include "Platform.h"
+#include "Enemy.h";
 
 class Player {
 	int width, height;
@@ -17,6 +18,7 @@ class Player {
 	bool moveUp = true;
 	bool prev_moveRight = false;
 	bool prev_moveLeft = false;
+	bool hitEnemy = false;
 	sf::Clock animateTime;
 	sf::Clock dt;
 	std::vector<sf::Texture> textures;
@@ -29,7 +31,7 @@ public:
 	float getX(), getY();
 	float getVelocityX();
 	float jumpHeight;
-	void update(std::vector<Platform> levelPlatforms, float dt);
+	void update(std::vector<Platform> levelPlatforms, std::vector<Enemy> enemies, float dt);
 	sf::Sprite getSprite();
 	void jump();
 	void changeSpriteTexture();
@@ -38,6 +40,7 @@ public:
 	float timeSinceLastKeyframe;
 	float walkFrame;
 	bool checkIfPlayerFell();
+	bool hasDied();
 
 	Player(TextureManager* textureManager) {
 		pos_x = 100.f;
@@ -144,12 +147,17 @@ void Player::changeSpriteTexture() {
 
 }
 
-void Player::update(std::vector<Platform> levelPlatforms, float dt) {
+bool Player::hasDied() {
+	return checkIfPlayerFell() || hitEnemy;
+}
+
+void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> enemies, float dt) {
 	
-	if (checkIfPlayerFell()) {
+	if (hasDied()) {
+		hitEnemy = false;
 		vel_x = 0;
 		vel_y = 0;
-		pos_y = 500;
+		pos_y = 666;
 		pos_x = 100;
 	}
 
@@ -253,8 +261,6 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 			topYCollision = (topY > platform.getY()) && (topY < (platform.getY() + platform.getHeight()));
 			bottomYCollision = (bottomY > platform.getY() && (bottomY < platform.getY() + platform.getHeight()));
 
-
-
 			// Checks bottom collisions
 			if (vel_y > 0) {
 				float leftXCollission_bottom = (leftX + 1 > platform.getX()) && (leftX + 1 < (platform.getX() + platform.getWidth()));
@@ -270,8 +276,6 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 					
 				}
 			}
-
-
 
 			// Checks top collisions
 			if (vel_y < 0) {
@@ -303,8 +307,6 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 				}
 			}
 
-
-
 			// Checks right collisions
 			if (vel_x > 0) {
 				if (rightXCollision) {
@@ -321,17 +323,23 @@ void Player::update(std::vector<Platform> levelPlatforms, float dt) {
 				}
 			}
 
-
 			if (!playerTouchedBottom) {
 				fall = true;
 			}
 		}
 
+		for (auto &enemy : enemies) {
+			bool collission = 
+				((enemy.getX() >= pos_x && enemy.getX() <= pos_x + width) || (enemy.getX() + enemy.getWidth() >= pos_x && enemy.getX() + enemy.getWidth() <= pos_x + width)) &&
+				((enemy.getY() >= pos_y && enemy.getY() <= pos_y + height) || (enemy.getY() + enemy.getHeight() >= pos_y && enemy.getY() + enemy.getHeight() <= pos_y + height));
+
+			if (collission) {
+				hitEnemy = true;
+			}
+		}
+
 	}
-
 	changeSpriteTexture();
-
-
 }
 
 sf::Sprite Player::getSprite() {
