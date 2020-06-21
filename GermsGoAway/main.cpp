@@ -8,17 +8,19 @@
 #include "TextureManager.h"
 #include "Levels.h";
 #include "Background.h"
+#include "GameOver.h"
 
 
 
 int main()
 {
 	bool gameStarted = false;
-
+	bool restartGame = false;
+	bool leftClickReleased = true;
 	TextureManager* textureManager = new TextureManager();
 
 	// Window Properties
-	sf::RenderWindow window(sf::VideoMode(1280, 720), "Germs Go Away");
+	sf::RenderWindow window(sf::VideoMode(1280, 720), "Mondlitch");
 	window.setFramerateLimit(60);
 	// View Properties
 	sf::View view(sf::FloatRect(0.f, 0.f, 1280.f, 720.f));
@@ -33,6 +35,9 @@ int main()
 
 	// Preparing Main Menu
 	MainMenu mainMenu = MainMenu(textureManager);
+
+	// Preparing Game Over
+	GameOver gameOver = GameOver(textureManager);
 
 	// Preparing Player
 	Player player = Player(textureManager);
@@ -65,16 +70,30 @@ int main()
 		}
 
 		if (!gameStarted) {
+			std::cout << "M-gameStarted: " << gameStarted << std::endl;
+			player.revive();
 			mainMenu.update();
 			window.draw(mainMenu.getBackground());
 			window.draw(mainMenu.getTitle());
-			gameStarted = mainMenu.doesGameStart();
+			if (mainMenu.doesGameStart() == 0) {
+				leftClickReleased = true;
+			}
+			if (leftClickReleased) {
+				gameStarted = mainMenu.doesGameStart();
+				if (gameStarted) {
+					view.setSize(480.f, 270.f);
+					view.setCenter(240.f,player.getY() - 16.f);
+				}
+			}
 
+			std::cout << "mainMenu.doesGameStart(): " << mainMenu.doesGameStart() << std::endl;
 			window.setView(view);
 		}
 
-		if (gameStarted) {
-
+		if (gameStarted && (player.getLives() > -1)) {
+			std::cout << "G-gameStarted: " << gameStarted << std::endl;
+			
+			
 			// Level update & render
 			background.update(player.getVelocityX());
 			window.draw(background.getMainSprite());
@@ -85,48 +104,60 @@ int main()
 				window.draw(platform.getSprite());
 			}
 
-			
-
 			for (auto &enemy : levelOneEnemies) {
 				enemy.update(levels.getPlatformNearPlayerLevelOne(enemy.getX(), enemy.getY()));
 				window.draw(enemy.getSprite());
 			}
 
 			// Player update & render
-			player.update(levels.getPlatformNearPlayerLevelOne(player.getX(), player.getY()), levelOneEnemies, clock.getElapsedTime().asSeconds());
+			player.update(levels.getPlatformNearPlayerLevelOne(player.getX(), player.getY()), levelOneEnemies, clock.getElapsedTime().asSeconds(), cameraAdjusted);
 			window.draw(player.getSprite());
 
-			view.setSize(480.f, 270.f);
+			
 
 			if (!player.hasDied() && cameraAdjusted) {
+
 				cameraX = player.getX();
 				cameraY = player.getY() - 16.f;
 				cameraX_Spawn = 240.f;
 				cameraY_Spawn = 650.f;
-				cameraSlope = (cameraY_Spawn - cameraY) / (cameraX_Spawn - cameraX);
+				cameraSlope = -1 * (cameraY_Spawn - cameraY) / (cameraX_Spawn - cameraX);
 				if (player.getX() >= 240.f) {
+					std::cout << player.getY() << std::endl;
 					view.setCenter(cameraX, cameraY);
 				}
 				else {
-					view.setCenter(cameraX_Spawn, cameraY);
+						
+						view.setCenter(cameraX_Spawn, cameraY);
 				}
 			}
 			else {
-				std::cout << "DIED?" << std::endl;
+
 				cameraAdjusted = false;
 				float cameraXadjustment = 3.f * (cameraX * 0.0015);
 				float cameraYadjustment = cameraXadjustment * cameraSlope;
-				view.move(-cameraXadjustment, -cameraYadjustment);
-				if (view.getCenter().x <= cameraX_Spawn) {
+				view.move(-cameraXadjustment, cameraYadjustment);
+				
+				if (view.getCenter().x <= cameraX_Spawn ) {
 					cameraAdjusted = true;
 				}
 				
 			}
 
+			window.setView(view);
+		}
 
-
-
-	
+		if ((player.getLives() == -1)) {
+			
+			view.setSize(1280.f, 720.f);
+			view.setCenter(640.f, 360.f);
+			gameOver.update();
+			window.draw(gameOver.getTitle());
+			if (gameOver.doesGameStart()) {
+				restartGame = true;
+				gameStarted = false;
+				leftClickReleased = false;
+			}
 			window.setView(view);
 		}
 

@@ -143,6 +143,7 @@
     <ClInclude Include="DirtPlatform.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="FlowerPlatform.h" />
+    <ClInclude Include="GameOver.h" />
     <ClInclude Include="GrassPlatform.h" />
     <ClInclude Include="Levels.h" />
     <ClInclude Include="MainMenu.h" />

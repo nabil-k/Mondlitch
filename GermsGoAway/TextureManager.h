@@ -12,6 +12,7 @@ class TextureManager {
 	sf::Image SkySpriteSheet;
 	sf::Image MainMenuBackgroundSpriteSheet;
 	sf::Image MainMenuTitleSpriteSheet;
+	sf::Image GameOverTitleSpriteSheet;
 	std::vector<sf::Texture> enemyTextures;
 
 
@@ -125,6 +126,13 @@ class TextureManager {
 		sf::Texture MainMenuTitleTexture = sf::Texture();
 		MainMenuTitleTexture.loadFromImage(MainMenuTitleSpriteSheet, sf::IntRect(0, 0, 620, 280));
 		textures.insert({ "MainMenu_Title", MainMenuTitleTexture });
+
+		// Main Menu Texture Assets
+		GameOverTitleSpriteSheet.loadFromFile("./assets/gameover.png");
+
+		sf::Texture GameOverTitleTexture = sf::Texture();
+		GameOverTitleTexture.loadFromImage(GameOverTitleSpriteSheet, sf::IntRect(0, 0, 1280, 720));
+		textures.insert({ "GameOver_Title", GameOverTitleTexture });
 
 	}
 

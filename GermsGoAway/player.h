@@ -19,6 +19,7 @@ class Player {
 	bool prev_moveRight = false;
 	bool prev_moveLeft = false;
 	bool hitEnemy = false;
+	int lives = 3;
 	sf::Clock animateTime;
 	sf::Clock dt;
 	std::vector<sf::Texture> textures;
@@ -31,10 +32,11 @@ public:
 	float getX(), getY();
 	float getVelocityX();
 	float jumpHeight;
-	void update(std::vector<Platform> levelPlatforms, std::vector<Enemy> enemies, float dt);
+	void revive();
+	void update(std::vector<Platform> levelPlatforms, std::vector<Enemy> enemies, float dt, bool cameraAdjusted);
 	sf::Sprite getSprite();
-	void jump();
 	void changeSpriteTexture();
+	int getLives();
 	// for animations
 	float maxKeyframeTime;
 	float timeSinceLastKeyframe;
@@ -93,8 +95,8 @@ float Player::getVelocityX() {
 }
 
 
-void Player::jump() {
-
+void Player::revive() {
+	lives = 3;
 }
 
 bool Player::checkIfPlayerFell() {
@@ -151,7 +153,11 @@ bool Player::hasDied() {
 	return checkIfPlayerFell() || hitEnemy;
 }
 
-void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> enemies, float dt) {
+int Player::getLives() {
+	return lives;
+}
+
+void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> enemies, float dt, bool cameraAdjusted) {
 	
 	if (hasDied()) {
 		hitEnemy = false;
@@ -159,77 +165,81 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 		vel_y = 0;
 		pos_y = 666;
 		pos_x = 100;
+		lives--;
+		std::cout << lives << std::endl;
 	}
 
-	bool jumpPressed = false;
-	bool moveLeftPressed = false;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+	if (cameraAdjusted) {
+		bool jumpPressed = false;
+		bool moveLeftPressed = false;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+			jumpPressed = true;
 
-		jumpPressed = true;
-
-
-	}
-
-	// Might be used to implement crounching later
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-	}
-
-	// Left movement
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-		if (moveLeft) {
-			if (prev_moveRight) {
-				vel_x = 0;
-				prev_moveRight = false;
-			}
-			prev_moveLeft = true;
-
-			if (vel_x > -2) {
-				vel_x -= gravity * 0.001802f;
-			}
-			pos_x += vel_x;
-			sprite.move(vel_x, 0.f);
 		}
-	}
-	else {
-		if (prev_moveLeft) {
-			vel_x = 0;
-		}
-	}
 
-	// Right movement
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-		if (moveRight) {
+		// Might be used to implement crounching later
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+		}
+
+		// Left movement
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+			if (moveLeft) {
+				if (prev_moveRight) {
+					vel_x = 0;
+					prev_moveRight = false;
+				}
+				prev_moveLeft = true;
+
+				if (vel_x > -2) {
+					vel_x -= gravity * 0.001802f;
+				}
+				pos_x += vel_x;
+				sprite.move(vel_x, 0.f);
+			}
+		}
+		else {
 			if (prev_moveLeft) {
 				vel_x = 0;
-				prev_moveLeft = false;
 			}
-			prev_moveRight = true;
+		}
 
-			if (vel_x < 2) {
-				vel_x += gravity * 0.001802f;
+		// Right movement
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+			if (moveRight) {
+				if (prev_moveLeft) {
+					vel_x = 0;
+					prev_moveLeft = false;
+				}
+				prev_moveRight = true;
+
+				if (vel_x < 2) {
+					vel_x += gravity * 0.001802f;
+				}
+
+				pos_x += vel_x;
+
+				sprite.move(vel_x, 0);
+			}
+		}
+		else {
+			if (prev_moveRight) {
+				vel_x = 0;
+			}
+		}
+
+		// Controls how a player jumps
+		if (jumpPressed) {
+			if (!fall) {
+				pos_y -= jumpHeight;
+				vel_y = -jumpHeight;
+				sprite.move(0, vel_y);
 			}
 
-			pos_x += vel_x;
-
-			sprite.move(vel_x, 0);
-		}
-	}
-	else {
-		if (prev_moveRight) {
-			vel_x = 0;
-		}
-	}
-
-	// Controls how a player jumps
-	if (jumpPressed) {
-		if (!fall) {
-			pos_y -= jumpHeight;
-			vel_y = -jumpHeight;
-			sprite.move(0, vel_y);
 		}
 
-	}
 
+	}
+	
 	// Controls how player falls
 	if (fall) {
 		if (vel_y < 10) {

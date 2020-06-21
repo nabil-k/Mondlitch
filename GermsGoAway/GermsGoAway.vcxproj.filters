@@ -59,5 +59,8 @@
     <ClInclude Include="Enemy.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="GameOver.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
