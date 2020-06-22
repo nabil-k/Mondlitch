@@ -2,6 +2,7 @@
 #include <math.h>
 #include <vector>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "TextureManager.h"
 #include "Platform.h"
 #include "Enemy.h";
@@ -19,7 +20,7 @@ class Player {
 	bool prev_moveRight = false;
 	bool prev_moveLeft = false;
 	bool hitEnemy = false;
-	int lives = 3;
+	int lives = 1;
 	sf::Clock animateTime;
 	sf::Clock dt;
 	std::vector<sf::Texture> textures;
@@ -43,6 +44,9 @@ public:
 	float walkFrame;
 	bool checkIfPlayerFell();
 	bool hasDied();
+	//for sfx
+	sf::Sound sound;
+	sf::SoundBuffer maleHurtSoundbuffer;
 
 	Player(TextureManager* textureManager) {
 		pos_x = 100.f;
@@ -70,6 +74,15 @@ public:
 
 		sprite.setPosition(sf::Vector2f(pos_x, pos_y));
 
+		// Loading sfx
+
+		if (!maleHurtSoundbuffer.loadFromFile("./audio/male-hurt3.ogg")) {
+			std::cout << "Couldn't load hurt sfx" << std::endl;
+		}
+
+		sound.setBuffer(maleHurtSoundbuffer);
+			
+
 	}
 
 };
@@ -96,7 +109,7 @@ float Player::getVelocityX() {
 
 
 void Player::revive() {
-	lives = 3;
+	lives = 1;
 }
 
 bool Player::checkIfPlayerFell() {
@@ -160,6 +173,7 @@ int Player::getLives() {
 void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> enemies, float dt, bool cameraAdjusted) {
 	
 	if (hasDied()) {
+		sound.play();
 		hitEnemy = false;
 		vel_x = 0;
 		vel_y = 0;

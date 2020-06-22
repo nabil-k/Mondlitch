@@ -34,7 +34,7 @@ int main()
 	window.setView(view);
 
 	// Preparing Main Menu
-	MainMenu mainMenu = MainMenu(textureManager);
+	MainMenu* mainMenu = new MainMenu(textureManager);
 
 	// Preparing Game Over
 	GameOver gameOver = GameOver(textureManager);
@@ -48,7 +48,7 @@ int main()
 	std::vector<Enemy> levelOneEnemies = levels.getLevelOneEnemies();
 
 	// Preparing Background
-	Background background = Background(textureManager);
+	Background* background = new Background(textureManager);
 
 
 	// Clock starts
@@ -70,34 +70,34 @@ int main()
 		}
 
 		if (!gameStarted) {
-			std::cout << "M-gameStarted: " << gameStarted << std::endl;
+			gameOver.allowMusic();
 			player.revive();
-			mainMenu.update();
-			window.draw(mainMenu.getBackground());
-			window.draw(mainMenu.getTitle());
-			if (mainMenu.doesGameStart() == 0) {
+			mainMenu->update();
+			window.draw(mainMenu->getBackground());
+			window.draw(mainMenu->getTitle());
+			if (mainMenu->doesGameStart(leftClickReleased) == 0) {
 				leftClickReleased = true;
 			}
 			if (leftClickReleased) {
-				gameStarted = mainMenu.doesGameStart();
+				gameStarted = mainMenu->doesGameStart(leftClickReleased);
 				if (gameStarted) {
 					view.setSize(480.f, 270.f);
 					view.setCenter(240.f,player.getY() - 16.f);
 				}
 			}
 
-			std::cout << "mainMenu.doesGameStart(): " << mainMenu.doesGameStart() << std::endl;
+
 			window.setView(view);
 		}
 
 		if (gameStarted && (player.getLives() > -1)) {
-			std::cout << "G-gameStarted: " << gameStarted << std::endl;
+
 			
 			
 			// Level update & render
-			background.update(player.getVelocityX());
-			window.draw(background.getMainSprite());
-			window.draw(background.getLayerOneSprite());
+			background->update(player.getVelocityX());
+			window.draw(background->getMainSprite());
+			window.draw(background->getLayerOneSprite());
 
 			for (auto &platform : levelOneStructures) {
 				platform.update();
@@ -123,7 +123,7 @@ int main()
 				cameraY_Spawn = 650.f;
 				cameraSlope = -1 * (cameraY_Spawn - cameraY) / (cameraX_Spawn - cameraX);
 				if (player.getX() >= 240.f) {
-					std::cout << player.getY() << std::endl;
+		
 					view.setCenter(cameraX, cameraY);
 				}
 				else {
@@ -148,7 +148,8 @@ int main()
 		}
 
 		if ((player.getLives() == -1)) {
-			
+			background->stopMusic();
+			background->allowMusic();
 			view.setSize(1280.f, 720.f);
 			view.setCenter(640.f, 360.f);
 			gameOver.update();
@@ -156,6 +157,7 @@ int main()
 			if (gameOver.doesGameStart()) {
 				restartGame = true;
 				gameStarted = false;
+				mainMenu->allowMenuMusic();
 				leftClickReleased = false;
 			}
 			window.setView(view);
