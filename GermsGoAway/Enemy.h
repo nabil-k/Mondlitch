@@ -40,6 +40,7 @@ class Enemy {
 			height = 20;
 			vel_x = 0;
 			vel_y = 0;
+			maxKeyframeTime = 0.5;
 			canMoveLeft = false;
 			canMoveRight = true;
 			this->textureManager = textureManager;

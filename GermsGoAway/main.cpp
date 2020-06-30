@@ -9,6 +9,7 @@
 #include "Levels.h";
 #include "Background.h"
 #include "GameOver.h"
+#include "Goal.h"
 
 
 

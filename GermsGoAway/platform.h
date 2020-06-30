@@ -7,14 +7,21 @@ class Platform {
 	int width, height;
 	float x, y;
 	sf::Texture texture;
-	sf::Sprite sprite;
 	sf::String type;
 
 	public:
+		float maxKeyframeTime = 0.25;
+		float frame = 0;
+		float timeSinceLastKeyframe = 0;
+		sf::Clock animateTime;
+		sf::Sprite sprite;
 		int getWidth(), getHeight();
 		float getX(), getY();
 		bool isCollidable();
+		void animate();
 		void update();
+		TextureManager* textureManager;
+		bool animationCycleBack = false;
 		std::string getType();
 		sf::Sprite getSprite();
 
@@ -25,6 +32,7 @@ class Platform {
 			this->width = width;
 			this-> height = height;
 			if (type != "Turn") {
+				this->textureManager = textureManager;
 				sprite.setTexture(textureManager->getTexture(type));
 			}
 			
@@ -73,8 +81,32 @@ bool Platform::isCollidable() {
 	}
 }
 
+void Platform::animate() {
+	if (type == "Goal_1") {
+		timeSinceLastKeyframe = animateTime.getElapsedTime().asSeconds();
+		if (timeSinceLastKeyframe > maxKeyframeTime) {
+			if (frame <= 2 && !animationCycleBack) {
+				frame++;
+			}
+			if (frame > 2 && !animationCycleBack) {
+				frame = 1;
+				animationCycleBack = true;
+			}
+			else if (animationCycleBack) {
+				frame--;
+			}
+			if (frame == 0) {
+				animationCycleBack = false;
+			}
+			sprite.setTexture(textureManager->getGoalTexture(frame));
+			animateTime.restart();
+		}
+	}
+
+}
+
 void Platform::update() {
-	
+	animate();
 }
 
 sf::Sprite Platform::getSprite() {

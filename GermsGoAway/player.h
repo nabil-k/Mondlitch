@@ -81,7 +81,7 @@ public:
 		}
 
 		sound.setBuffer(maleHurtSoundbuffer);
-			
+
 
 	}
 
@@ -171,7 +171,6 @@ int Player::getLives() {
 }
 
 void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> enemies, float dt, bool cameraAdjusted) {
-	
 	if (hasDied()) {
 		sound.play();
 		hitEnemy = false;
@@ -253,7 +252,7 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 
 
 	}
-	
+
 	// Controls how player falls
 	if (fall) {
 		if (vel_y < 10) {
@@ -287,8 +286,8 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 
 			// Checks bottom collisions
 			if (vel_y > 0) {
-				float leftXCollission_bottom = (leftX + 1 > platform.getX()) && (leftX + 1 < (platform.getX() + platform.getWidth()));
-				float rightXCollision_bottom = (rightX - 1 > platform.getX()) && (rightX - 1 < (platform.getX() + platform.getWidth()));
+				float leftXCollission_bottom = (leftX + 3 > platform.getX()) && (leftX + 3 < (platform.getX() + platform.getWidth()));
+				float rightXCollision_bottom = (rightX - 3 > platform.getX()) && (rightX - 3 < (platform.getX() + platform.getWidth()));
 				if (bottomYCollision && (rightXCollision_bottom || leftXCollission_bottom)) {
 					playerTouchedBottom = true;
 					float adjustment = platform.getY() - height;
@@ -297,36 +296,36 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 					sprite.setPosition(pos_x, adjustment);
 					fall = false;
 					vel_y = 0;
-					
+
 				}
 			}
 
 			// Checks top collisions
 			if (vel_y < 0) {
-				float leftXCollission_bottom = (leftX + 1 > platform.getX()) && (leftX + 1 < (platform.getX() + platform.getWidth()));
-				float rightXCollision_bottom = (rightX - 1 > platform.getX()) && (rightX - 1 < (platform.getX() + platform.getWidth()));
+				float leftXCollission_bottom = (leftX + 3 > platform.getX()) && (leftX + 3 < (platform.getX() + platform.getWidth()));
+				float rightXCollision_bottom = (rightX - 3 > platform.getX()) && (rightX - 3 < (platform.getX() + platform.getWidth()));
 				if (topYCollision && (rightXCollision_bottom || leftXCollission_bottom)) {
 					float adjustment = platform.getY() + platform.getHeight();
 					pos_y = adjustment;
 					topY = pos_y;
 					sprite.setPosition(pos_x, adjustment);
 					vel_y = 0;
-					
+
 				}
 			}
 
 			// Checks left collisions
 			if (vel_x < 0) {
 				if (leftXCollission) {
-					bool checkTopYPlatInBetween = platform.getY() > topY && platform.getY() + 1 < bottomY;
-					bool checkBottomYPlatInBetween = platform.getY() + platform.getHeight() > topY && platform.getY() + platform.getHeight() < bottomY;
+					bool checkTopYPlatInBetween = platform.getY() < topY + 3 && platform.getY() + platform.getHeight() > topY + 3;
+					bool checkBottomYPlatInBetween = platform.getY() < bottomY - 3 && platform.getY() + platform.getHeight() > bottomY - 3;
 					if (checkTopYPlatInBetween || checkBottomYPlatInBetween) {
 						moveLeft = false;
 						pos_x = platform.getX() + platform.getWidth();
 						leftX = pos_x;
 						sprite.setPosition(pos_x, pos_y);
 						vel_x = 0;
-						
+
 					}
 				}
 			}
@@ -334,15 +333,15 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 			// Checks right collisions
 			if (vel_x > 0) {
 				if (rightXCollision) {
-					bool checkTopYPlatInBetween = platform.getY() > topY && platform.getY() + 1 < bottomY;
-					bool checkBottomYPlatInBetween = platform.getY() + platform.getHeight() > topY && platform.getY() + platform.getHeight() < bottomY;
+					bool checkTopYPlatInBetween = platform.getY() < topY + 3 && platform.getY() + platform.getHeight() > topY + 3;
+					bool checkBottomYPlatInBetween = platform.getY() < bottomY - 3 && platform.getY() + platform.getHeight() > bottomY - 3;
 					if (checkTopYPlatInBetween || checkBottomYPlatInBetween) {
 						moveRight = false;
 						pos_x = platform.getX() - width;
 						rightX = (pos_x + width);
 						sprite.setPosition(pos_x, pos_y);
 						vel_x = 0;
-						
+					
 					}
 				}
 			}
@@ -353,7 +352,7 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 		}
 
 		for (auto &enemy : enemies) {
-			bool collission = 
+			bool collission =
 				((enemy.getX() >= pos_x && enemy.getX() <= pos_x + width) || (enemy.getX() + enemy.getWidth() >= pos_x && enemy.getX() + enemy.getWidth() <= pos_x + width)) &&
 				((enemy.getY() >= pos_y && enemy.getY() <= pos_y + height) || (enemy.getY() + enemy.getHeight() >= pos_y && enemy.getY() + enemy.getHeight() <= pos_y + height));
 

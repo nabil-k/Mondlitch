@@ -14,12 +14,14 @@ class TextureManager {
 	sf::Image MainMenuTitleSpriteSheet;
 	sf::Image GameOverTitleSpriteSheet;
 	std::vector<sf::Texture> enemyTextures;
+	std::vector<sf::Texture> goalTextures;
 
 
 
 	public:
 		sf::Texture& getTexture(std::string textureName);
 		sf::Texture& getEnemyTexture(int index);
+		sf::Texture& getGoalTexture(int index);
 
 
 	TextureManager() {
@@ -60,6 +62,21 @@ class TextureManager {
 		sf::Texture HoleTexture = sf::Texture();
 		HoleTexture.loadFromImage(LevelSpriteSheet, sf::IntRect(144, 112, 16, 16));
 		textures.insert({ "Hole", HoleTexture });
+
+		sf::Texture GoalTexture_1 = sf::Texture();
+		GoalTexture_1.loadFromImage(LevelSpriteSheet, sf::IntRect(160, 112, 16, 16));
+		goalTextures.push_back(GoalTexture_1);
+		textures.insert({ "Goal_1", GoalTexture_1 });
+
+		sf::Texture GoalTexture_2 = sf::Texture();
+		GoalTexture_2.loadFromImage(LevelSpriteSheet, sf::IntRect(176, 112, 16, 16));
+		goalTextures.push_back(GoalTexture_2);
+		textures.insert({ "Goal_2", GoalTexture_2 });
+
+		sf::Texture GoalTexture_3 = sf::Texture();
+		GoalTexture_3.loadFromImage(LevelSpriteSheet, sf::IntRect(192, 112, 16, 16));
+		goalTextures.push_back(GoalTexture_3);
+		textures.insert({ "Goal_3", GoalTexture_3 });
 
 		// Backdrop Assets
 		SkySpriteSheet.loadFromFile("./assets/sky.png");
@@ -142,7 +159,12 @@ sf::Texture& TextureManager::getEnemyTexture(int index) {
 	return enemyTextures.at(index);
 }
 
+sf::Texture& TextureManager::getGoalTexture(int index) {
+	return goalTextures.at(index);
+}
+
 sf::Texture& TextureManager::getTexture(std::string textureName) {
+	
 	if (textures.find(textureName) != textures.end()) {
 		return textures.at(textureName);
 	}
