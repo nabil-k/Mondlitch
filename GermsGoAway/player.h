@@ -20,7 +20,10 @@ class Player {
 	bool prev_moveRight = false;
 	bool prev_moveLeft = false;
 	bool hitEnemy = false;
+	bool gameFinished = false;
+	int levelCompleted = 0;
 	int lives = 1;
+	
 	sf::Clock animateTime;
 	sf::Clock dt;
 	std::vector<sf::Texture> textures;
@@ -38,12 +41,14 @@ public:
 	sf::Sprite getSprite();
 	void changeSpriteTexture();
 	int getLives();
+	int getLevelsCompleted();
 	// for animations
 	float maxKeyframeTime;
 	float timeSinceLastKeyframe;
 	float walkFrame;
 	bool checkIfPlayerFell();
 	bool hasDied();
+	bool finishedGame();
 	//for sfx
 	sf::Sound sound;
 	sf::SoundBuffer maleHurtSoundbuffer;
@@ -110,13 +115,22 @@ float Player::getVelocityX() {
 
 void Player::revive() {
 	lives = 1;
+	gameFinished = false;
 }
+
+int Player::getLevelsCompleted() {
+	return levelCompleted;
+};
 
 bool Player::checkIfPlayerFell() {
 	if (pos_y > 850) {
 		return true;
 	}
 	return false;
+}
+
+bool Player::finishedGame() {
+	return gameFinished;
 }
 
 void Player::changeSpriteTexture() {
@@ -289,14 +303,21 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 				float leftXCollission_bottom = (leftX + 3 > platform.getX()) && (leftX + 3 < (platform.getX() + platform.getWidth()));
 				float rightXCollision_bottom = (rightX - 3 > platform.getX()) && (rightX - 3 < (platform.getX() + platform.getWidth()));
 				if (bottomYCollision && (rightXCollision_bottom || leftXCollission_bottom)) {
-					playerTouchedBottom = true;
-					float adjustment = platform.getY() - height;
-					pos_y = adjustment;
-					bottomY = pos_y + height;
-					sprite.setPosition(pos_x, adjustment);
-					fall = false;
-					vel_y = 0;
-
+					if (platform.isWalkable()) {
+						playerTouchedBottom = true;
+						float adjustment = platform.getY() - height;
+						pos_y = adjustment;
+						bottomY = pos_y + height;
+						sprite.setPosition(pos_x, adjustment);
+						fall = false;
+						vel_y = 0;
+					}
+					else if (platform.getType() == "Goal_1") {
+			
+						levelCompleted++;
+						pos_x = 0;
+						pos_y = 0;
+					}
 				}
 			}
 
@@ -305,11 +326,14 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 				float leftXCollission_bottom = (leftX + 3 > platform.getX()) && (leftX + 3 < (platform.getX() + platform.getWidth()));
 				float rightXCollision_bottom = (rightX - 3 > platform.getX()) && (rightX - 3 < (platform.getX() + platform.getWidth()));
 				if (topYCollision && (rightXCollision_bottom || leftXCollission_bottom)) {
-					float adjustment = platform.getY() + platform.getHeight();
-					pos_y = adjustment;
-					topY = pos_y;
-					sprite.setPosition(pos_x, adjustment);
-					vel_y = 0;
+					if (platform.isWalkable()) {
+						float adjustment = platform.getY() + platform.getHeight();
+						pos_y = adjustment;
+						topY = pos_y;
+						sprite.setPosition(pos_x, adjustment);
+						vel_y = 0;
+					}
+
 
 				}
 			}
@@ -320,11 +344,14 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 					bool checkTopYPlatInBetween = platform.getY() < topY + 3 && platform.getY() + platform.getHeight() > topY + 3;
 					bool checkBottomYPlatInBetween = platform.getY() < bottomY - 3 && platform.getY() + platform.getHeight() > bottomY - 3;
 					if (checkTopYPlatInBetween || checkBottomYPlatInBetween) {
-						moveLeft = false;
-						pos_x = platform.getX() + platform.getWidth();
-						leftX = pos_x;
-						sprite.setPosition(pos_x, pos_y);
-						vel_x = 0;
+						if (platform.isWalkable()) {
+							moveLeft = false;
+							pos_x = platform.getX() + platform.getWidth();
+							leftX = pos_x;
+							sprite.setPosition(pos_x, pos_y);
+							vel_x = 0;
+						}
+
 
 					}
 				}
@@ -336,12 +363,13 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 					bool checkTopYPlatInBetween = platform.getY() < topY + 3 && platform.getY() + platform.getHeight() > topY + 3;
 					bool checkBottomYPlatInBetween = platform.getY() < bottomY - 3 && platform.getY() + platform.getHeight() > bottomY - 3;
 					if (checkTopYPlatInBetween || checkBottomYPlatInBetween) {
-						moveRight = false;
-						pos_x = platform.getX() - width;
-						rightX = (pos_x + width);
-						sprite.setPosition(pos_x, pos_y);
-						vel_x = 0;
-					
+						if (platform.isWalkable()) {
+							moveRight = false;
+							pos_x = platform.getX() - width;
+							rightX = (pos_x + width);
+							sprite.setPosition(pos_x, pos_y);
+							vel_x = 0;
+						}
 					}
 				}
 			}
@@ -362,7 +390,12 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 		}
 
 	}
+
 	changeSpriteTexture();
+
+	if (levelCompleted == 2) {
+		gameFinished = true;
+	}
 }
 
 sf::Sprite Player::getSprite() {

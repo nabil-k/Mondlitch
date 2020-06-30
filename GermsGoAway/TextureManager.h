@@ -13,6 +13,7 @@ class TextureManager {
 	sf::Image MainMenuBackgroundSpriteSheet;
 	sf::Image MainMenuTitleSpriteSheet;
 	sf::Image GameOverTitleSpriteSheet;
+	sf::Image VictoryTitleSpriteSheet;
 	std::vector<sf::Texture> enemyTextures;
 	std::vector<sf::Texture> goalTextures;
 
@@ -144,12 +145,19 @@ class TextureManager {
 		MainMenuTitleTexture.loadFromImage(MainMenuTitleSpriteSheet, sf::IntRect(0, 0, 620, 280));
 		textures.insert({ "MainMenu_Title", MainMenuTitleTexture });
 
-		// Main Menu Texture Assets
+		// Game Over Texture Assets
 		GameOverTitleSpriteSheet.loadFromFile("./assets/gameover.png");
 
 		sf::Texture GameOverTitleTexture = sf::Texture();
 		GameOverTitleTexture.loadFromImage(GameOverTitleSpriteSheet, sf::IntRect(0, 0, 1280, 720));
 		textures.insert({ "GameOver_Title", GameOverTitleTexture });
+
+		// Victory Texture Assets
+		VictoryTitleSpriteSheet.loadFromFile("./assets/victory.png");
+
+		sf::Texture VictoryTitleTexture = sf::Texture();
+		VictoryTitleTexture.loadFromImage(VictoryTitleSpriteSheet, sf::IntRect(0, 0, 1280, 720));
+		textures.insert({ "Victory_Title", VictoryTitleTexture });
 
 	}
 

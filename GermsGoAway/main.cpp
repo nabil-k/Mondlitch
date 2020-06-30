@@ -9,7 +9,7 @@
 #include "Levels.h";
 #include "Background.h"
 #include "GameOver.h"
-#include "Goal.h"
+#include "Victory.h"
 
 
 
@@ -40,13 +40,20 @@ int main()
 	// Preparing Game Over
 	GameOver gameOver = GameOver(textureManager);
 
+	// Preparing Victory
+	Victory victory = Victory(textureManager);
+
 	// Preparing Player
 	Player player = Player(textureManager);
 
 	// Preparing Level
 	Levels levels = Levels(textureManager);
+	
 	std::vector<Platform> levelOneStructures = levels.getLevelOneStructures();
 	std::vector<Enemy> levelOneEnemies = levels.getLevelOneEnemies();
+
+	std::vector<Platform> levelTwoStructures = levels.getLevelTwoStructures();
+	std::vector<Enemy> levelTwoEnemies = levels.getLevelTwoEnemies();
 
 	// Preparing Background
 	Background* background = new Background(textureManager);
@@ -72,6 +79,7 @@ int main()
 
 		if (!gameStarted) {
 			gameOver.allowMusic();
+			victory.allowMusic();
 			player.revive();
 			mainMenu->update();
 			window.draw(mainMenu->getBackground());
@@ -93,25 +101,46 @@ int main()
 
 		if (gameStarted && (player.getLives() > -1)) {
 
-			
-			
 			// Level update & render
 			background->update(player.getVelocityX());
 			window.draw(background->getMainSprite());
 			window.draw(background->getLayerOneSprite());
 
-			for (auto &platform : levelOneStructures) {
-				platform.update();
-				window.draw(platform.getSprite());
+			if (player.getLevelsCompleted() == 0) {
+
+				for (auto &platform : levelOneStructures) {
+					platform.update();
+					window.draw(platform.getSprite());
+				}
+
+				for (auto &enemy : levelOneEnemies) {
+					
+					enemy.update(levels.getPlatformNearPlayerLevelOne(enemy.getX(), enemy.getY()));
+
+					window.draw(enemy.getSprite());
+				}
+
+				// Player update & render
+				player.update(levels.getPlatformNearPlayerLevelOne(player.getX(), player.getY()), levelOneEnemies, clock.getElapsedTime().asSeconds(), cameraAdjusted);
+
+			}
+			else if (player.getLevelsCompleted() == 1) {
+				std::cout << "SwiTCHD" << std::endl;
+				for (auto &platform : levelTwoStructures) {
+					platform.update();
+					window.draw(platform.getSprite());
+				}
+
+				for (auto &enemy : levelTwoEnemies) {
+					enemy.update(levels.getPlatformNearPlayerLevelOne(enemy.getX(), enemy.getY()));
+					window.draw(enemy.getSprite());
+				}
+
+				// Player update & render
+				player.update(levels.getPlatformNearPlayerLevelTwo(player.getX(), player.getY()), levelTwoEnemies, clock.getElapsedTime().asSeconds(), cameraAdjusted);
+
 			}
 
-			for (auto &enemy : levelOneEnemies) {
-				enemy.update(levels.getPlatformNearPlayerLevelOne(enemy.getX(), enemy.getY()));
-				window.draw(enemy.getSprite());
-			}
-
-			// Player update & render
-			player.update(levels.getPlatformNearPlayerLevelOne(player.getX(), player.getY()), levelOneEnemies, clock.getElapsedTime().asSeconds(), cameraAdjusted);
 			window.draw(player.getSprite());
 
 			
@@ -156,6 +185,22 @@ int main()
 			gameOver.update();
 			window.draw(gameOver.getTitle());
 			if (gameOver.doesGameStart()) {
+				restartGame = true;
+				gameStarted = false;
+				mainMenu->allowMenuMusic();
+				leftClickReleased = false;
+			}
+			window.setView(view);
+		}
+
+		if ((player.finishedGame() == true)) {
+			background->stopMusic();
+			background->allowMusic();
+			view.setSize(1280.f, 720.f);
+			view.setCenter(640.f, 360.f);
+			victory.update();
+			window.draw(victory.getTitle());
+			if (victory.doesGameStart()) {
 				restartGame = true;
 				gameStarted = false;
 				mainMenu->allowMenuMusic();

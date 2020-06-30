@@ -18,6 +18,7 @@ class Platform {
 		int getWidth(), getHeight();
 		float getX(), getY();
 		bool isCollidable();
+		bool isWalkable();
 		void animate();
 		void update();
 		TextureManager* textureManager;
@@ -64,6 +65,27 @@ float Platform::getY() {
 }
 
 bool Platform::isCollidable() {
+	if (type == "Grass") {
+		return true;
+	}
+	else if (type == "Dirt") {
+		return true;
+	}
+	else if (type == "Wall") {
+		return true;
+	}
+	else if (type == "Turn") {
+		return true;
+	}
+	else if (type == "Goal_1") {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+bool Platform::isWalkable() {
 	if (type == "Grass") {
 		return true;
 	}
