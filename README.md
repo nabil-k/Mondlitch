@@ -1,2 +1,2 @@
-# GermsGoAway
-A game where you have to run away from those freaking germs. Damn germs.
+# Mondlitch
+A platformer where you have to avoid monsters made from an evil spirit. Spooky. (Made with the SFML Library)
