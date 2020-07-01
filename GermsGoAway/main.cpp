@@ -99,14 +99,16 @@ int main()
 			window.setView(view);
 		}
 
-		if (gameStarted && (player.getLives() > -1)) {
+		if (gameStarted && (player.getLives() > -1) && !player.finishedGame()) {
 
 			// Level update & render
 			background->update(player.getVelocityX());
 			window.draw(background->getMainSprite());
-			window.draw(background->getLayerOneSprite());
 
 			if (player.getLevelsCompleted() == 0) {
+
+				cameraX_Spawn = 240.f;
+				cameraY_Spawn = 650.f;
 
 				for (auto &platform : levelOneStructures) {
 					platform.update();
@@ -125,14 +127,17 @@ int main()
 
 			}
 			else if (player.getLevelsCompleted() == 1) {
-				std::cout << "SwiTCHD" << std::endl;
+
+				cameraX_Spawn = 240.f;
+				cameraY_Spawn = 266.f;
+
 				for (auto &platform : levelTwoStructures) {
 					platform.update();
 					window.draw(platform.getSprite());
 				}
 
 				for (auto &enemy : levelTwoEnemies) {
-					enemy.update(levels.getPlatformNearPlayerLevelOne(enemy.getX(), enemy.getY()));
+					enemy.update(levels.getPlatformNearPlayerLevelTwo(enemy.getX(), enemy.getY()));
 					window.draw(enemy.getSprite());
 				}
 
@@ -145,12 +150,11 @@ int main()
 
 			
 
-			if (!player.hasDied() && cameraAdjusted) {
+			if (!player.hasDied() && cameraAdjusted && !player.finishedGame()) {
 
 				cameraX = player.getX();
 				cameraY = player.getY() - 16.f;
-				cameraX_Spawn = 240.f;
-				cameraY_Spawn = 650.f;
+
 				cameraSlope = -1 * (cameraY_Spawn - cameraY) / (cameraX_Spawn - cameraX);
 				if (player.getX() >= 240.f) {
 		
@@ -193,7 +197,7 @@ int main()
 			window.setView(view);
 		}
 
-		if ((player.finishedGame() == true)) {
+		if (player.finishedGame()) {
 			background->stopMusic();
 			background->allowMusic();
 			view.setSize(1280.f, 720.f);

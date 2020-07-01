@@ -22,7 +22,7 @@ public:
 	Victory(TextureManager* textureManagerInitialized) {
 
 		title.setTexture(textureManagerInitialized->getTexture("Victory_Title"));
-		if (!gameOverBuffer.loadFromFile("./audio/game-over-sfx-and-voice.wav")) {
+		if (!gameOverBuffer.loadFromFile("./audio/466133__humanoide9000__victory-fanfare.wav")) {
 			std::cout << "Couldn't load hurt sfx" << std::endl;
 		}
 

@@ -115,6 +115,7 @@ float Player::getVelocityX() {
 
 void Player::revive() {
 	lives = 1;
+	levelCompleted = 0;
 	gameFinished = false;
 }
 
@@ -123,9 +124,17 @@ int Player::getLevelsCompleted() {
 };
 
 bool Player::checkIfPlayerFell() {
-	if (pos_y > 850) {
-		return true;
+	if (levelCompleted == 0) {
+		if (pos_y > 850) {
+			return true;
+		}
 	}
+	else if (levelCompleted == 1) {
+		if (pos_y > 600) {
+			return true;
+		}
+	}
+
 	return false;
 }
 
@@ -190,8 +199,15 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 		hitEnemy = false;
 		vel_x = 0;
 		vel_y = 0;
-		pos_y = 666;
-		pos_x = 100;
+		if (levelCompleted == 0) {
+			pos_y = 666;
+			pos_x = 100;
+		}
+		else if (levelCompleted == 1) {
+			pos_y = 282;
+			pos_x = 100;
+		}
+
 		lives--;
 		std::cout << lives << std::endl;
 	}
@@ -315,8 +331,10 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 					else if (platform.getType() == "Goal_1") {
 			
 						levelCompleted++;
-						pos_x = 0;
-						pos_y = 0;
+						if (levelCompleted == 1){
+							pos_x = 100;
+							pos_y = 282;
+						}
 					}
 				}
 			}
@@ -392,7 +410,7 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 	}
 
 	changeSpriteTexture();
-
+	std::cout << pos_y << std::endl;
 	if (levelCompleted == 2) {
 		gameFinished = true;
 	}
