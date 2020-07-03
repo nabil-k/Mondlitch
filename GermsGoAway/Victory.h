@@ -44,7 +44,7 @@ void Victory::update() {
 
 bool Victory::doesGameStart() {
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-
+		sound.stop();
 		return true;
 	}
 	return false;

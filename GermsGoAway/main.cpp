@@ -10,6 +10,7 @@
 #include "Background.h"
 #include "GameOver.h"
 #include "Victory.h"
+#include "Hud.h"
 
 
 
@@ -25,6 +26,8 @@ int main()
 	window.setFramerateLimit(60);
 	// View Properties
 	sf::View view(sf::FloatRect(0.f, 0.f, 1280.f, 720.f));
+	sf::View hud_view(sf::FloatRect(0.f, 0.f, 1280.f, 720.f));
+
 	float cameraX;
 	float cameraY;
 	float cameraX_Spawn;
@@ -33,6 +36,9 @@ int main()
 	bool cameraAdjusted = true;
 
 	window.setView(view);
+
+	// Prearing Hud
+	Hud hud = Hud(textureManager);
 
 	// Preparing Main Menu
 	MainMenu* mainMenu = new MainMenu(textureManager);
@@ -81,6 +87,7 @@ int main()
 			gameOver.allowMusic();
 			victory.allowMusic();
 			player.revive();
+			
 			mainMenu->update();
 			window.draw(mainMenu->getBackground());
 			window.draw(mainMenu->getTitle());
@@ -90,6 +97,7 @@ int main()
 			if (leftClickReleased) {
 				gameStarted = mainMenu->doesGameStart(leftClickReleased);
 				if (gameStarted) {
+					std::cout << "RESET PLAYER" << std::endl;
 					view.setSize(480.f, 270.f);
 					view.setCenter(240.f,player.getY() - 16.f);
 				}
@@ -101,15 +109,53 @@ int main()
 
 		if (gameStarted && (player.getLives() > -1) && !player.finishedGame()) {
 
+			if (player.getLevelsCompleted() == 0) {
+				cameraX_Spawn = 240.f;
+				cameraY_Spawn = 650.f;
+			}
+			else if (player.getLevelsCompleted() == 1) {
+				cameraX_Spawn = 240.f;
+				cameraY_Spawn = 266.f;
+			}
+
+
+			if (!player.hasDied() && cameraAdjusted && !player.finishedGame()) {
+
+				cameraX = player.getX();
+				cameraY = player.getY() - 16.f;
+
+				cameraSlope = -1 * (cameraY_Spawn - cameraY) / (cameraX_Spawn - cameraX);
+				if (player.getX() >= 240.f) {
+
+					view.setCenter(cameraX, cameraY);
+				}
+				else {
+
+					view.setCenter(cameraX_Spawn, cameraY);
+				}
+			}
+			else {
+
+				cameraAdjusted = false;
+				float cameraXadjustment = 3.f * (cameraX * 0.0015);
+				float cameraYadjustment = cameraXadjustment * cameraSlope;
+				view.move(-cameraXadjustment, cameraYadjustment);
+
+				if (view.getCenter().x <= cameraX_Spawn) {
+					cameraAdjusted = true;
+				}
+
+			}
+			window.setView(view);
+			
 			// Level update & render
 			background->update(player.getVelocityX());
 			window.draw(background->getMainSprite());
 
 			if (player.getLevelsCompleted() == 0) {
 
-				cameraX_Spawn = 240.f;
-				cameraY_Spawn = 650.f;
 
+				std::cout << "Level 1: " << player.getX() << std::endl;
 				for (auto &platform : levelOneStructures) {
 					platform.update();
 					window.draw(platform.getSprite());
@@ -128,9 +174,8 @@ int main()
 			}
 			else if (player.getLevelsCompleted() == 1) {
 
-				cameraX_Spawn = 240.f;
-				cameraY_Spawn = 266.f;
 
+				std::cout << "Level 2: " << player.getX() << std::endl;
 				for (auto &platform : levelTwoStructures) {
 					platform.update();
 					window.draw(platform.getSprite());
@@ -146,39 +191,15 @@ int main()
 
 			}
 
+			std::cout << "Player X Being Drawn " << player.getX() << std::endl;
 			window.draw(player.getSprite());
 
+			window.setView(hud_view);
+			for (int i = 0; i <= player.getLives(); i++) {
+				window.draw(hud.getHearts()[i]);
+			}
 			
-
-			if (!player.hasDied() && cameraAdjusted && !player.finishedGame()) {
-
-				cameraX = player.getX();
-				cameraY = player.getY() - 16.f;
-
-				cameraSlope = -1 * (cameraY_Spawn - cameraY) / (cameraX_Spawn - cameraX);
-				if (player.getX() >= 240.f) {
-		
-					view.setCenter(cameraX, cameraY);
-				}
-				else {
-						
-						view.setCenter(cameraX_Spawn, cameraY);
-				}
-			}
-			else {
-
-				cameraAdjusted = false;
-				float cameraXadjustment = 3.f * (cameraX * 0.0015);
-				float cameraYadjustment = cameraXadjustment * cameraSlope;
-				view.move(-cameraXadjustment, cameraYadjustment);
-				
-				if (view.getCenter().x <= cameraX_Spawn ) {
-					cameraAdjusted = true;
-				}
-				
-			}
-
-			window.setView(view);
+			
 		}
 
 		if ((player.getLives() == -1)) {

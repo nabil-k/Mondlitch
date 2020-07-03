@@ -146,6 +146,7 @@
     <ClInclude Include="GameOver.h" />
     <ClInclude Include="Goal.h" />
     <ClInclude Include="GrassPlatform.h" />
+    <ClInclude Include="Hud.h" />
     <ClInclude Include="Levels.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="platform.h" />

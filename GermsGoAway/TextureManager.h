@@ -30,6 +30,10 @@ class TextureManager {
 		// Level Texture Assets
 		LevelSpriteSheet.loadFromFile("./assets/sheet.png");
 
+		sf::Texture HealthPoint = sf::Texture();
+		HealthPoint.loadFromImage(LevelSpriteSheet, sf::IntRect(76, 73, 35, 36));
+		textures.insert({ "HealthPoint", HealthPoint });
+
 		sf::Texture GrassTexture = sf::Texture();
 		GrassTexture.loadFromImage(LevelSpriteSheet, sf::IntRect(177, 0, 16, 16));
 		textures.insert({ "Grass", GrassTexture });
@@ -78,6 +82,7 @@ class TextureManager {
 		GoalTexture_3.loadFromImage(LevelSpriteSheet, sf::IntRect(192, 112, 16, 16));
 		goalTextures.push_back(GoalTexture_3);
 		textures.insert({ "Goal_3", GoalTexture_3 });
+
 
 		// Backdrop Assets
 		SkySpriteSheet.loadFromFile("./assets/sky.png");

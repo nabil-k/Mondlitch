@@ -20,9 +20,10 @@ class Player {
 	bool prev_moveRight = false;
 	bool prev_moveLeft = false;
 	bool hitEnemy = false;
+	bool hitTeleport = false;
 	bool gameFinished = false;
 	int levelCompleted = 0;
-	int lives = 1;
+	int lives = 2;
 	
 	sf::Clock animateTime;
 	sf::Clock dt;
@@ -52,6 +53,8 @@ public:
 	//for sfx
 	sf::Sound sound;
 	sf::SoundBuffer maleHurtSoundbuffer;
+	sf::Sound teleportSound;
+	sf::SoundBuffer teleportSoundbuffer;
 
 	Player(TextureManager* textureManager) {
 		pos_x = 100.f;
@@ -84,8 +87,13 @@ public:
 		if (!maleHurtSoundbuffer.loadFromFile("./audio/male-hurt3.ogg")) {
 			std::cout << "Couldn't load hurt sfx" << std::endl;
 		}
-
 		sound.setBuffer(maleHurtSoundbuffer);
+
+		if (!teleportSoundbuffer.loadFromFile("./audio/345835__krzysiunet__teleport.wav")) {
+			std::cout << "Couldn't load teleport sfx" << std::endl;
+		}
+
+		teleportSound.setBuffer(teleportSoundbuffer);
 
 
 	}
@@ -114,8 +122,12 @@ float Player::getVelocityX() {
 
 
 void Player::revive() {
-	lives = 1;
+	lives = 2;
+	pos_x = 100.f;
+	pos_y = 300.f;
+	sprite.setPosition(pos_x, pos_y);
 	levelCompleted = 0;
+	fall = true;
 	gameFinished = false;
 }
 
@@ -209,7 +221,12 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 		}
 
 		lives--;
-		std::cout << lives << std::endl;
+
+	}
+
+	if (hitTeleport && levelCompleted <= 1) {
+		teleportSound.play();
+		hitTeleport = false;
 	}
 
 	if (cameraAdjusted) {
@@ -218,10 +235,6 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
 			jumpPressed = true;
 
-		}
-
-		// Might be used to implement crounching later
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
 		}
 
 		// Left movement
@@ -334,6 +347,7 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 						if (levelCompleted == 1){
 							pos_x = 100;
 							pos_y = 282;
+							hitTeleport = true;
 						}
 					}
 				}
@@ -351,8 +365,6 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 						sprite.setPosition(pos_x, adjustment);
 						vel_y = 0;
 					}
-
-
 				}
 			}
 
@@ -369,8 +381,6 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 							sprite.setPosition(pos_x, pos_y);
 							vel_x = 0;
 						}
-
-
 					}
 				}
 			}
@@ -410,7 +420,7 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 	}
 
 	changeSpriteTexture();
-	std::cout << pos_y << std::endl;
+
 	if (levelCompleted == 2) {
 		gameFinished = true;
 	}

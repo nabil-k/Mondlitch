@@ -44,7 +44,7 @@ void GameOver::update() {
 
 bool GameOver::doesGameStart() {
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-	
+		sound.stop();
 		return true;
 	}
 	return false;

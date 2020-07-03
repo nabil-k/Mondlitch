@@ -25,7 +25,7 @@ class Background {
 			}
 
 			music.setLoop(true);
-			music.setVolume(10);
+			music.setVolume(50);
 
 		}
 

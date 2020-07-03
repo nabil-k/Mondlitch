@@ -190,10 +190,7 @@ std::vector<Platform> Levels::getPlatformNearPlayerLevelOne(float playerX, float
 		PlayerRowIndex = 0;
 
 	}
-	std::cout << playerX << std::endl;
-	std::cout << playerY << std::endl;
-	std::cout << PlayerColumnIndex << std::endl;
-	std::cout << PlayerRowIndex << std::endl;
+
 	return levelOneCollisionSections[PlayerRowIndex][PlayerColumnIndex];
 }
 

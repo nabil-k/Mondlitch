@@ -68,5 +68,8 @@
     <ClInclude Include="Victory.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Hud.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
