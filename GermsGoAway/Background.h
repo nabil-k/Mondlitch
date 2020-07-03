@@ -46,7 +46,6 @@ sf::Sprite Background::getMainSprite() {
 
 void Background::update(float vel_x) {
 	if (playMusic) {
-		std::cout << "play again" << std::endl;
 		music.play();
 		playMusic = false;
 	}

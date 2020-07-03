@@ -12,8 +12,6 @@
 #include "Victory.h"
 #include "Hud.h"
 
-
-
 int main()
 {
 	bool gameStarted = false;
@@ -24,6 +22,10 @@ int main()
 	// Window Properties
 	sf::RenderWindow window(sf::VideoMode(1280, 720), "Mondlitch");
 	window.setFramerateLimit(60);
+	sf::Image icon;
+	icon.loadFromFile("./assets/icon.png");
+	window.setIcon(16, 16, icon.getPixelsPtr());
+
 	// View Properties
 	sf::View view(sf::FloatRect(0.f, 0.f, 1280.f, 720.f));
 	sf::View hud_view(sf::FloatRect(0.f, 0.f, 1280.f, 720.f));
@@ -71,171 +73,168 @@ int main()
 
 	while (window.isOpen())
 	{
-		
-		window.clear(sf::Color(0, 0, 0));
-		
+		std::cout << window.hasFocus() << std::endl;
+		if (window.hasFocus()) {
 
-		// Game Exit
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed)
-				window.close();
-		}
+			window.clear(sf::Color(0, 0, 0));
 
-		if (!gameStarted) {
-			gameOver.allowMusic();
-			victory.allowMusic();
-			player.revive();
-			
-			mainMenu->update();
-			window.draw(mainMenu->getBackground());
-			window.draw(mainMenu->getTitle());
-			if (mainMenu->doesGameStart(leftClickReleased) == 0) {
-				leftClickReleased = true;
+
+			// Game Exit
+			sf::Event event;
+			while (window.pollEvent(event))
+			{
+				if (event.type == sf::Event::Closed)
+					window.close();
 			}
-			if (leftClickReleased) {
-				gameStarted = mainMenu->doesGameStart(leftClickReleased);
-				if (gameStarted) {
-					std::cout << "RESET PLAYER" << std::endl;
-					view.setSize(480.f, 270.f);
-					view.setCenter(240.f,player.getY() - 16.f);
+
+			if (!gameStarted) {
+				gameOver.allowMusic();
+				victory.allowMusic();
+				player.revive();
+
+				mainMenu->update();
+				window.draw(mainMenu->getBackground());
+				window.draw(mainMenu->getTitle());
+				if (mainMenu->doesGameStart(leftClickReleased) == 0) {
+					leftClickReleased = true;
 				}
+				if (leftClickReleased) {
+					gameStarted = mainMenu->doesGameStart(leftClickReleased);
+					if (gameStarted) {
+						view.setSize(480.f, 270.f);
+						view.setCenter(240.f, player.getY() - 16.f);
+					}
+				}
+
+
+				window.setView(view);
 			}
 
+			if (gameStarted && (player.getLives() > -1) && !player.finishedGame()) {
 
-			window.setView(view);
-		}
-
-		if (gameStarted && (player.getLives() > -1) && !player.finishedGame()) {
-
-			if (player.getLevelsCompleted() == 0) {
-				cameraX_Spawn = 240.f;
-				cameraY_Spawn = 650.f;
-			}
-			else if (player.getLevelsCompleted() == 1) {
-				cameraX_Spawn = 240.f;
-				cameraY_Spawn = 266.f;
-			}
+				if (player.getLevelsCompleted() == 0) {
+					cameraX_Spawn = 240.f;
+					cameraY_Spawn = 650.f;
+				}
+				else if (player.getLevelsCompleted() == 1) {
+					cameraX_Spawn = 240.f;
+					cameraY_Spawn = 266.f;
+				}
 
 
-			if (!player.hasDied() && cameraAdjusted && !player.finishedGame()) {
+				if (!player.hasDied() && cameraAdjusted && !player.finishedGame()) {
 
-				cameraX = player.getX();
-				cameraY = player.getY() - 16.f;
+					cameraX = player.getX();
+					cameraY = player.getY() - 16.f;
 
-				cameraSlope = -1 * (cameraY_Spawn - cameraY) / (cameraX_Spawn - cameraX);
-				if (player.getX() >= 240.f) {
+					cameraSlope = -1 * (cameraY_Spawn - cameraY) / (cameraX_Spawn - cameraX);
+					if (player.getX() >= 240.f) {
 
-					view.setCenter(cameraX, cameraY);
+						view.setCenter(cameraX, cameraY);
+					}
+					else {
+
+						view.setCenter(cameraX_Spawn, cameraY);
+					}
 				}
 				else {
 
-					view.setCenter(cameraX_Spawn, cameraY);
+					cameraAdjusted = false;
+					float cameraXadjustment = 3.f * (cameraX * 0.0015);
+					float cameraYadjustment = cameraXadjustment * cameraSlope;
+					view.move(-cameraXadjustment, cameraYadjustment);
+
+					if (view.getCenter().x <= cameraX_Spawn) {
+						cameraAdjusted = true;
+					}
+
 				}
+				window.setView(view);
+
+				// Level update & render
+				background->update(player.getVelocityX());
+				window.draw(background->getMainSprite());
+
+				if (player.getLevelsCompleted() == 0) {
+
+					for (auto &platform : levelOneStructures) {
+						platform.update();
+						window.draw(platform.getSprite());
+					}
+
+					for (auto &enemy : levelOneEnemies) {
+
+						enemy.update(levels.getPlatformNearPlayerLevelOne(enemy.getX(), enemy.getY()));
+
+						window.draw(enemy.getSprite());
+					}
+
+					// Player update & render
+					player.update(levels.getPlatformNearPlayerLevelOne(player.getX(), player.getY()), levelOneEnemies, clock.getElapsedTime().asSeconds(), cameraAdjusted);
+
+				}
+				else if (player.getLevelsCompleted() == 1) {
+
+					for (auto &platform : levelTwoStructures) {
+						platform.update();
+						window.draw(platform.getSprite());
+					}
+
+					for (auto &enemy : levelTwoEnemies) {
+						enemy.update(levels.getPlatformNearPlayerLevelTwo(enemy.getX(), enemy.getY()));
+						window.draw(enemy.getSprite());
+					}
+
+					// Player update & render
+					player.update(levels.getPlatformNearPlayerLevelTwo(player.getX(), player.getY()), levelTwoEnemies, clock.getElapsedTime().asSeconds(), cameraAdjusted);
+
+				}
+
+				window.draw(player.getSprite());
+
+				window.setView(hud_view);
+				for (int i = 0; i <= player.getLives(); i++) {
+					window.draw(hud.getHearts()[i]);
+				}
+
+
 			}
-			else {
 
-				cameraAdjusted = false;
-				float cameraXadjustment = 3.f * (cameraX * 0.0015);
-				float cameraYadjustment = cameraXadjustment * cameraSlope;
-				view.move(-cameraXadjustment, cameraYadjustment);
-
-				if (view.getCenter().x <= cameraX_Spawn) {
-					cameraAdjusted = true;
+			if ((player.getLives() == -1)) {
+				background->stopMusic();
+				background->allowMusic();
+				view.setSize(1280.f, 720.f);
+				view.setCenter(640.f, 360.f);
+				gameOver.update();
+				window.draw(gameOver.getTitle());
+				if (gameOver.doesGameStart()) {
+					restartGame = true;
+					gameStarted = false;
+					mainMenu->allowMenuMusic();
+					leftClickReleased = false;
 				}
-
-			}
-			window.setView(view);
-			
-			// Level update & render
-			background->update(player.getVelocityX());
-			window.draw(background->getMainSprite());
-
-			if (player.getLevelsCompleted() == 0) {
-
-
-				std::cout << "Level 1: " << player.getX() << std::endl;
-				for (auto &platform : levelOneStructures) {
-					platform.update();
-					window.draw(platform.getSprite());
-				}
-
-				for (auto &enemy : levelOneEnemies) {
-					
-					enemy.update(levels.getPlatformNearPlayerLevelOne(enemy.getX(), enemy.getY()));
-
-					window.draw(enemy.getSprite());
-				}
-
-				// Player update & render
-				player.update(levels.getPlatformNearPlayerLevelOne(player.getX(), player.getY()), levelOneEnemies, clock.getElapsedTime().asSeconds(), cameraAdjusted);
-
-			}
-			else if (player.getLevelsCompleted() == 1) {
-
-
-				std::cout << "Level 2: " << player.getX() << std::endl;
-				for (auto &platform : levelTwoStructures) {
-					platform.update();
-					window.draw(platform.getSprite());
-				}
-
-				for (auto &enemy : levelTwoEnemies) {
-					enemy.update(levels.getPlatformNearPlayerLevelTwo(enemy.getX(), enemy.getY()));
-					window.draw(enemy.getSprite());
-				}
-
-				// Player update & render
-				player.update(levels.getPlatformNearPlayerLevelTwo(player.getX(), player.getY()), levelTwoEnemies, clock.getElapsedTime().asSeconds(), cameraAdjusted);
-
+				window.setView(view);
 			}
 
-			std::cout << "Player X Being Drawn " << player.getX() << std::endl;
-			window.draw(player.getSprite());
-
-			window.setView(hud_view);
-			for (int i = 0; i <= player.getLives(); i++) {
-				window.draw(hud.getHearts()[i]);
+			if (player.finishedGame()) {
+				background->stopMusic();
+				background->allowMusic();
+				view.setSize(1280.f, 720.f);
+				view.setCenter(640.f, 360.f);
+				victory.update();
+				window.draw(victory.getTitle());
+				if (victory.doesGameStart()) {
+					restartGame = true;
+					gameStarted = false;
+					mainMenu->allowMenuMusic();
+					leftClickReleased = false;
+				}
+				window.setView(view);
 			}
-			
-			
+
+
+			window.display();
 		}
-
-		if ((player.getLives() == -1)) {
-			background->stopMusic();
-			background->allowMusic();
-			view.setSize(1280.f, 720.f);
-			view.setCenter(640.f, 360.f);
-			gameOver.update();
-			window.draw(gameOver.getTitle());
-			if (gameOver.doesGameStart()) {
-				restartGame = true;
-				gameStarted = false;
-				mainMenu->allowMenuMusic();
-				leftClickReleased = false;
-			}
-			window.setView(view);
-		}
-
-		if (player.finishedGame()) {
-			background->stopMusic();
-			background->allowMusic();
-			view.setSize(1280.f, 720.f);
-			view.setCenter(640.f, 360.f);
-			victory.update();
-			window.draw(victory.getTitle());
-			if (victory.doesGameStart()) {
-				restartGame = true;
-				gameStarted = false;
-				mainMenu->allowMenuMusic();
-				leftClickReleased = false;
-			}
-			window.setView(view);
-		}
-
-
-		window.display();
 	}
 
 	return 0;

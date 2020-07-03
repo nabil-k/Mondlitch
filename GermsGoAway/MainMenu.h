@@ -68,7 +68,6 @@ void MainMenu::allowMenuMusic() {
 void MainMenu::update() {
 	animateTitle();
 	if (playMusic) {
-		std::cout << "play again" << std::endl;
 		music.play();
 		playMusic = false;
 	}

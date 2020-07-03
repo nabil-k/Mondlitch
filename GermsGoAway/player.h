@@ -341,15 +341,6 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 						fall = false;
 						vel_y = 0;
 					}
-					else if (platform.getType() == "Goal_1") {
-			
-						levelCompleted++;
-						if (levelCompleted == 1){
-							pos_x = 100;
-							pos_y = 282;
-							hitTeleport = true;
-						}
-					}
 				}
 			}
 
@@ -381,6 +372,15 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 							sprite.setPosition(pos_x, pos_y);
 							vel_x = 0;
 						}
+						else if (platform.getType() == "Goal_1") {
+
+							levelCompleted++;
+							if (levelCompleted == 1) {
+								pos_x = 100;
+								pos_y = 282;
+								hitTeleport = true;
+							}
+						}
 					}
 				}
 			}
@@ -397,6 +397,15 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 							rightX = (pos_x + width);
 							sprite.setPosition(pos_x, pos_y);
 							vel_x = 0;
+						}
+						else if (platform.getType() == "Goal_1") {
+
+							levelCompleted++;
+							if (levelCompleted == 1) {
+								pos_x = 100;
+								pos_y = 282;
+								hitTeleport = true;
+							}
 						}
 					}
 				}
