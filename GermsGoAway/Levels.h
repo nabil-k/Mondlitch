@@ -117,7 +117,7 @@ void Levels::createLevel(std::ifstream& file, std::vector<Platform>& levelStruct
 			}
 			else if (platform == 'E') {
 				Enemy e = Enemy(x, y, textureManager);
-				std::cout << "Enemy Created: " << x << "," << y << std::endl;
+
 				levelEnemies.push_back(e);
 			}
 			else if (platform == 'T') {

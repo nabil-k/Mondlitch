@@ -73,168 +73,166 @@ int main()
 
 	while (window.isOpen())
 	{
-		std::cout << window.hasFocus() << std::endl;
-		if (window.hasFocus()) {
+		bool listenForInput = window.hasFocus();
 
-			window.clear(sf::Color(0, 0, 0));
+		window.clear(sf::Color(19, 15, 25));
 
+		// Game Exit
+		sf::Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+				window.close();
+		}
 
-			// Game Exit
-			sf::Event event;
-			while (window.pollEvent(event))
-			{
-				if (event.type == sf::Event::Closed)
-					window.close();
+		if (!gameStarted) {
+			gameOver.allowMusic();
+			victory.allowMusic();
+			player.revive();
+
+			mainMenu->update();
+			window.draw(mainMenu->getBackground());
+			window.draw(mainMenu->getTitle());
+			if (mainMenu->doesGameStart(leftClickReleased) == 0) {
+				leftClickReleased = true;
+			}
+			if (leftClickReleased) {
+				gameStarted = mainMenu->doesGameStart(leftClickReleased);
+				if (gameStarted) {
+					view.setSize(480.f, 270.f);
+					view.setCenter(240.f, player.getY() - 16.f);
+				}
 			}
 
-			if (!gameStarted) {
-				gameOver.allowMusic();
-				victory.allowMusic();
-				player.revive();
 
-				mainMenu->update();
-				window.draw(mainMenu->getBackground());
-				window.draw(mainMenu->getTitle());
-				if (mainMenu->doesGameStart(leftClickReleased) == 0) {
-					leftClickReleased = true;
-				}
-				if (leftClickReleased) {
-					gameStarted = mainMenu->doesGameStart(leftClickReleased);
-					if (gameStarted) {
-						view.setSize(480.f, 270.f);
-						view.setCenter(240.f, player.getY() - 16.f);
-					}
-				}
+			window.setView(view);
+		}
 
+		if (gameStarted && (player.getLives() > -1) && !player.finishedGame()) {
 
-				window.setView(view);
+			if (player.getLevelsCompleted() == 0) {
+				cameraX_Spawn = 240.f;
+				cameraY_Spawn = 650.f;
+			}
+			else if (player.getLevelsCompleted() == 1) {
+				cameraX_Spawn = 240.f;
+				cameraY_Spawn = 266.f;
 			}
 
-			if (gameStarted && (player.getLives() > -1) && !player.finishedGame()) {
 
-				if (player.getLevelsCompleted() == 0) {
-					cameraX_Spawn = 240.f;
-					cameraY_Spawn = 650.f;
-				}
-				else if (player.getLevelsCompleted() == 1) {
-					cameraX_Spawn = 240.f;
-					cameraY_Spawn = 266.f;
-				}
+			if (!player.hasDied() && cameraAdjusted && !player.finishedGame()) {
 
+				cameraX = player.getX();
+				cameraY = player.getY() - 16.f;
 
-				if (!player.hasDied() && cameraAdjusted && !player.finishedGame()) {
+				cameraSlope = -1 * (cameraY_Spawn - cameraY) / (cameraX_Spawn - cameraX);
+				if (player.getX() >= 240.f) {
 
-					cameraX = player.getX();
-					cameraY = player.getY() - 16.f;
-
-					cameraSlope = -1 * (cameraY_Spawn - cameraY) / (cameraX_Spawn - cameraX);
-					if (player.getX() >= 240.f) {
-
-						view.setCenter(cameraX, cameraY);
-					}
-					else {
-
-						view.setCenter(cameraX_Spawn, cameraY);
-					}
+					view.setCenter(cameraX, cameraY);
 				}
 				else {
 
-					cameraAdjusted = false;
-					float cameraXadjustment = 3.f * (cameraX * 0.0015);
-					float cameraYadjustment = cameraXadjustment * cameraSlope;
-					view.move(-cameraXadjustment, cameraYadjustment);
-
-					if (view.getCenter().x <= cameraX_Spawn) {
-						cameraAdjusted = true;
-					}
-
+					view.setCenter(cameraX_Spawn, cameraY);
 				}
-				window.setView(view);
+			}
+			else {
 
-				// Level update & render
-				background->update(player.getVelocityX());
-				window.draw(background->getMainSprite());
+				cameraAdjusted = false;
+				float cameraXadjustment = 3.f * (cameraX * 0.0015);
+				float cameraYadjustment = cameraXadjustment * cameraSlope;
+				view.move(-cameraXadjustment, cameraYadjustment);
 
-				if (player.getLevelsCompleted() == 0) {
-
-					for (auto &platform : levelOneStructures) {
-						platform.update();
-						window.draw(platform.getSprite());
-					}
-
-					for (auto &enemy : levelOneEnemies) {
-
-						enemy.update(levels.getPlatformNearPlayerLevelOne(enemy.getX(), enemy.getY()));
-
-						window.draw(enemy.getSprite());
-					}
-
-					// Player update & render
-					player.update(levels.getPlatformNearPlayerLevelOne(player.getX(), player.getY()), levelOneEnemies, clock.getElapsedTime().asSeconds(), cameraAdjusted);
-
-				}
-				else if (player.getLevelsCompleted() == 1) {
-
-					for (auto &platform : levelTwoStructures) {
-						platform.update();
-						window.draw(platform.getSprite());
-					}
-
-					for (auto &enemy : levelTwoEnemies) {
-						enemy.update(levels.getPlatformNearPlayerLevelTwo(enemy.getX(), enemy.getY()));
-						window.draw(enemy.getSprite());
-					}
-
-					// Player update & render
-					player.update(levels.getPlatformNearPlayerLevelTwo(player.getX(), player.getY()), levelTwoEnemies, clock.getElapsedTime().asSeconds(), cameraAdjusted);
-
+				if (view.getCenter().x <= cameraX_Spawn) {
+					cameraAdjusted = true;
 				}
 
-				window.draw(player.getSprite());
+			}
+			window.setView(view);
 
-				window.setView(hud_view);
-				for (int i = 0; i <= player.getLives(); i++) {
-					window.draw(hud.getHearts()[i]);
+			// Level update & render
+			background->update(player.getVelocityX());
+			window.draw(background->getMainSprite());
+
+			if (player.getLevelsCompleted() == 0) {
+
+				for (auto &platform : levelOneStructures) {
+					platform.update();
+					window.draw(platform.getSprite());
 				}
 
+				for (auto &enemy : levelOneEnemies) {
+
+					enemy.update(levels.getPlatformNearPlayerLevelOne(enemy.getX(), enemy.getY()));
+
+					window.draw(enemy.getSprite());
+				}
+
+				// Player update & render
+				player.update(levels.getPlatformNearPlayerLevelOne(player.getX(), player.getY()), levelOneEnemies, clock.getElapsedTime().asSeconds(), cameraAdjusted);
+
+			}
+			else if (player.getLevelsCompleted() == 1) {
+
+				for (auto &platform : levelTwoStructures) {
+					platform.update();
+					window.draw(platform.getSprite());
+				}
+
+				for (auto &enemy : levelTwoEnemies) {
+					enemy.update(levels.getPlatformNearPlayerLevelTwo(enemy.getX(), enemy.getY()));
+					window.draw(enemy.getSprite());
+				}
+
+				// Player update & render
+				player.update(levels.getPlatformNearPlayerLevelTwo(player.getX(), player.getY()), levelTwoEnemies, clock.getElapsedTime().asSeconds(), cameraAdjusted);
 
 			}
 
-			if ((player.getLives() == -1)) {
-				background->stopMusic();
-				background->allowMusic();
-				view.setSize(1280.f, 720.f);
-				view.setCenter(640.f, 360.f);
-				gameOver.update();
-				window.draw(gameOver.getTitle());
-				if (gameOver.doesGameStart()) {
-					restartGame = true;
-					gameStarted = false;
-					mainMenu->allowMenuMusic();
-					leftClickReleased = false;
-				}
-				window.setView(view);
-			}
+			window.draw(player.getSprite());
 
-			if (player.finishedGame()) {
-				background->stopMusic();
-				background->allowMusic();
-				view.setSize(1280.f, 720.f);
-				view.setCenter(640.f, 360.f);
-				victory.update();
-				window.draw(victory.getTitle());
-				if (victory.doesGameStart()) {
-					restartGame = true;
-					gameStarted = false;
-					mainMenu->allowMenuMusic();
-					leftClickReleased = false;
-				}
-				window.setView(view);
+			window.setView(hud_view);
+			for (int i = 0; i <= player.getLives(); i++) {
+				window.draw(hud.getHearts()[i]);
 			}
 
 
-			window.display();
 		}
+
+		if ((player.getLives() == -1)) {
+			background->stopMusic();
+			background->allowMusic();
+			view.setSize(1280.f, 720.f);
+			view.setCenter(640.f, 360.f);
+			gameOver.update();
+			window.draw(gameOver.getTitle());
+			if (gameOver.doesGameStart()) {
+				restartGame = true;
+				gameStarted = false;
+				mainMenu->allowMenuMusic();
+				leftClickReleased = false;
+			}
+			window.setView(view);
+		}
+
+		if (player.finishedGame()) {
+			background->stopMusic();
+			background->allowMusic();
+			view.setSize(1280.f, 720.f);
+			view.setCenter(640.f, 360.f);
+			victory.update();
+			window.draw(victory.getTitle());
+			if (victory.doesGameStart()) {
+				restartGame = true;
+				gameStarted = false;
+				mainMenu->allowMenuMusic();
+				leftClickReleased = false;
+			}
+			window.setView(view);
+		}
+
+
+		window.display();
+		
 	}
 
 	return 0;

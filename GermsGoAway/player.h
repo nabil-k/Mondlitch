@@ -198,6 +198,7 @@ void Player::changeSpriteTexture() {
 }
 
 bool Player::hasDied() {
+
 	return checkIfPlayerFell() || hitEnemy;
 }
 
@@ -224,8 +225,12 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 
 	}
 
-	if (hitTeleport && levelCompleted <= 1) {
+	if (hitTeleport && levelCompleted == 0) {
 		teleportSound.play();
+		levelCompleted++;
+		pos_x = 100;
+		pos_y = 282;
+		sprite.move(pos_x, pos_y);
 		hitTeleport = false;
 	}
 
@@ -373,11 +378,9 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 							vel_x = 0;
 						}
 						else if (platform.getType() == "Goal_1") {
+				
+							if (levelCompleted == 0) {
 
-							levelCompleted++;
-							if (levelCompleted == 1) {
-								pos_x = 100;
-								pos_y = 282;
 								hitTeleport = true;
 							}
 						}
@@ -399,11 +402,8 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 							vel_x = 0;
 						}
 						else if (platform.getType() == "Goal_1") {
-
-							levelCompleted++;
-							if (levelCompleted == 1) {
-								pos_x = 100;
-								pos_y = 282;
+		
+							if (levelCompleted == 0) {
 								hitTeleport = true;
 							}
 						}
