@@ -152,12 +152,12 @@ void Levels::createLevel(std::ifstream& file, std::vector<Platform>& levelStruct
 	for (int i = 0; i < levelStructures.size(); i++) {
 		Platform p = levelStructures[i];
 
-		int sectionRowIndex = std::ceil(p.getY() / 180) - 1;
+		int sectionRowIndex = std::ceil(p.getY() / 180.f) - 1;
 		if (sectionRowIndex == -1) {
 			sectionRowIndex = 0;
 		}
 
-		int sectionColumnIndex = std::ceil(p.getX() / 320) - 1;
+		int sectionColumnIndex = std::ceil(p.getX() / 320.f) - 1;
 		if (sectionColumnIndex == -1) {
 			sectionColumnIndex = 0;
 		}
@@ -190,7 +190,7 @@ std::vector<Platform> Levels::getPlatformNearPlayerLevelOne(float playerX, float
 		PlayerRowIndex = 0;
 
 	}
-
+	std::cout << PlayerRowIndex << " " << PlayerColumnIndex << std::endl;
 	return levelOneCollisionSections[PlayerRowIndex][PlayerColumnIndex];
 }
 
@@ -216,6 +216,6 @@ std::vector<Platform> Levels::getPlatformNearPlayerLevelTwo(float playerX, float
 		PlayerRowIndex = 0;
 
 	}
-
+	std::cout << PlayerRowIndex << " " << PlayerColumnIndex << std::endl;
 	return levelTwoCollisionSections[PlayerRowIndex][PlayerColumnIndex];
 }

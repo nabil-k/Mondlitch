@@ -161,13 +161,13 @@ int main()
 				}
 
 				for (auto &enemy : levelOneEnemies) {
-
+					std::cout << "Enemy" << std::endl;
 					enemy.update(levels.getPlatformNearPlayerLevelOne(enemy.getX(), enemy.getY()));
-
 					window.draw(enemy.getSprite());
 				}
 
 				// Player update & render
+				std::cout << "Player" << std::endl;
 				player.update(levels.getPlatformNearPlayerLevelOne(player.getX(), player.getY()), levelOneEnemies, clock.getElapsedTime().asSeconds(), cameraAdjusted);
 
 			}
@@ -179,11 +179,13 @@ int main()
 				}
 
 				for (auto &enemy : levelTwoEnemies) {
+					std::cout << "Enemy" << std::endl;
 					enemy.update(levels.getPlatformNearPlayerLevelTwo(enemy.getX(), enemy.getY()));
 					window.draw(enemy.getSprite());
 				}
 
 				// Player update & render
+				std::cout << "Player" << std::endl;
 				player.update(levels.getPlatformNearPlayerLevelTwo(player.getX(), player.getY()), levelTwoEnemies, clock.getElapsedTime().asSeconds(), cameraAdjusted);
 
 			}

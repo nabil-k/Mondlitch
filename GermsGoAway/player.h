@@ -383,6 +383,9 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 
 								hitTeleport = true;
 							}
+							else {
+								gameFinished = true;
+							}
 						}
 					}
 				}
@@ -405,6 +408,9 @@ void Player::update(std::vector<Platform> levelPlatforms, std::vector<Enemy> ene
 		
 							if (levelCompleted == 0) {
 								hitTeleport = true;
+							}
+							else {
+								gameFinished = true;
 							}
 						}
 					}

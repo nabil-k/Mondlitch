@@ -151,10 +151,17 @@
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="platform.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="RockPlatform.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Victory.h" />
     <ClInclude Include="WallPlatform.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GermsGoAway.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\Mondlitch\assets\hnet.com-image.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
